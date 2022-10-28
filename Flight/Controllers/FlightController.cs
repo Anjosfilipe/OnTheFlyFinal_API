@@ -27,13 +27,10 @@ namespace Flights.Controllers
         [HttpGet]
         public ActionResult<List<Flight>> GetAllFlights() => _flightServices.GetAllFlights();
 
-
-
-
         [HttpPost]
         public ActionResult<Flight> PostFlights(string iata, DateTime date, string rab, double hours, double minutes)
         {
-            date = date.AddHours(hours - 3).AddMinutes(minutes);
+            date = date.AddHours(hours).AddMinutes(minutes);
             iata = iata.ToUpper();
             if (date < DateTime.Now)
             {
@@ -101,33 +98,33 @@ namespace Flights.Controllers
             }
         }
 
-        //[HttpPut("{date}")]
-        //public ActionResult<Flights> UpdateFlights(string iata, DateTime date, double hours, double minutes, bool status)
-        //{
-        //    date = date.AddHours(hours).AddMinutes(minutes);
-        //    iata = iata.ToUpper();
-        //    var destiny = _airportServices.GetAirports(iata);
-        //    if (destiny == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    else
-        //    {
-        //        var flight = _flightsServices.GetFlights(destiny.IATA, date);
-        //        if (flight == null)
-        //        {
-        //            return NotFound();
-        //        }
-        //        else
-        //        {
-        //        flight.Status = status;
-        //        _flightsServices.UpdateFlights(flight);
-        //        return flight;
+        [HttpPut("{date}")]
+        public ActionResult<Flight> UpdateFlights(string iata, DateTime date, double hours, double minutes, bool status)
+        {
+            date = date.AddHours(hours).AddMinutes(minutes);
+            iata = iata.ToUpper();
+            var destiny = _airportServices.GetAirports(iata);
+            if (destiny == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                var flight = _flightServices.GetFlights(destiny.IATA, date);
+                if (flight == null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    flight.Status = status;
+                    _flightServices.UpdateFlights(flight);
+                    return flight;
 
-        //        }
-        //    }
+                }
+            }
 
 
-        //}
+        }
     }
 }

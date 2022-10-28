@@ -8,12 +8,11 @@ using System.Threading.Tasks;
 
 namespace ClassLibrary
 {
- 
-        [BsonIgnoreExtraElements]
-        public class PassengerRestricted
-        {
-            [Required]
-            public String CPF { get; set; }
-        }
-    
+    [BsonIgnoreExtraElements]
+    public class PassengerRestricted
+    {
+        [Required]
+        public String CPF { get; set; }
+    }
+
 }

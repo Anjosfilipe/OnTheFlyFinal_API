@@ -19,15 +19,12 @@ namespace Passengers.Controllers
             _addressServices = address;
             _passengerServices = passengerServices;
         }
-
         [HttpPost]
         public ActionResult<PassengerGarbage> PostPassenger(PassengerGarbage passengerGarbage, string cpf)
         {
             Passenger passengerIn = _passengerServices.GetPassenger(cpf);
-
             Address address1 = _addressServices.Create(passengerGarbage.Address);
             passengerGarbage.Address = address1;
-
             passengerGarbage.CPF = passengerIn.CPF;
             passengerGarbage.Name = passengerIn.Name;
             passengerGarbage.Gender = passengerIn.Gender;
@@ -36,11 +33,9 @@ namespace Passengers.Controllers
             passengerGarbage.DtRegister = passengerIn.DtRegister;
             passengerGarbage.Status = passengerIn.Status;
             passengerGarbage.Address = passengerIn.Address;
-
             _passengerGarbageServices.CreatePassengerGarbage(passengerGarbage);
             return CreatedAtRoute("GetPassengerGarbage", new { cpf = passengerIn.CPF.ToString() }, passengerIn);
         }
-
         [HttpGet("{cpf}", Name = "GetPassengerGarbage")]
         public ActionResult<PassengerGarbage> GetPassenger(string cpf)
         {
@@ -55,7 +50,5 @@ namespace Passengers.Controllers
         }
         [HttpGet]
         public ActionResult<List<PassengerGarbage>> GetAllPassengersGarbage() => _passengerGarbageServices.GetAllPassengersGarbage();
-
-
     }
 }

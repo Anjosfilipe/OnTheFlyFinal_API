@@ -14,19 +14,17 @@ namespace Passengers.Controllers
     {
         private readonly PassengerServices _passengerServices;
         private readonly AddressServices _addressServices;
+        private readonly PassengerRestrictedServices _passengerRestrictedServices;
         private readonly PassengerGarbageServices _passengerGarbageServices;
-
-        public PassengerController(PassengerServices passengerServices, PassengerGarbageServices passengerGarbageServices, AddressServices addressServices)
+        public PassengerController(PassengerRestrictedServices passengerRestrictedServices, PassengerServices passengerServices, PassengerGarbageServices passengerGarbageServices, AddressServices addressServices)
         {
             _passengerServices = passengerServices;
             _addressServices = addressServices;
             _passengerGarbageServices = passengerGarbageServices;
+            _passengerRestrictedServices = passengerRestrictedServices;
         }
-
         [HttpGet]
         public ActionResult<List<Passenger>> GetAllPassenger() => _passengerServices.GetAllPassengers();
-
-
         [HttpGet("{cpf}", Name = "GetCpf")]
         public ActionResult<Passenger> GetPassengerCpf(string cpf)
         {
@@ -37,7 +35,6 @@ namespace Passengers.Controllers
             }
             return Ok(pass);
         }
-
         [HttpPost]
         public ActionResult<Passenger> PostPassenger(string cpf, string name, char gender, string phone, DateTime dtBirth, string zip, string street, string district, int number, string compl, string city, string state)
         {
@@ -52,7 +49,6 @@ namespace Passengers.Controllers
                 DtRegister = DateTime.Now,
                 Address = new AddressServices().GetAddress(zip)
             };
-
             if (PassengerUtil.ValidateCpf(passenger.CPF) == false)
             {
                 return BadRequest("CPF inválido!");
@@ -79,51 +75,42 @@ namespace Passengers.Controllers
             _passengerServices.CreatePassenger(passenger);
             return CreatedAtRoute("GetCpf", new { CPF = passenger.CPF.ToString() }, passenger);
         }
-
         [HttpPut]
         public ActionResult<Passenger> PutPassenger([FromQuery] string cpf, string name, char gender, string phone, string zip, string street, string district, int number, string compl, string city, string state, bool status) //nao esta encontrando o objeto no banco
         {
             var pass = _passengerServices.GetPassenger(cpf);
-
             if (pass == null)
             {
-                return NotFound();
+                return BadRequest("CPF não encontrado!");
             }
             else
             {
-                var passenger = new Passenger
+                Passenger passengerIn = new()
                 {
-                    CPF = pass.CPF
+                    CPF = cpf,
+                    Name = name,
+                    Gender = gender,
+                    Phone = phone,
+                    Status = status,
+                    DtBirth = pass.DtBirth,
+                    DtRegister = pass.DtRegister,
+                    Address = new AddressServices().GetAddress(zip)
                 };
-                if (passenger.CPF == null)
+                _passengerServices.UpdatePassenger(passengerIn, cpf);
+                pass = _passengerServices.GetPassenger(cpf);
+                if (passengerIn.Status != true)
                 {
-                    return BadRequest("CPF não encontrado!");
-                }
-                else
-                {
-                    Passenger passengerIn = new()
-                    {
-                        CPF = passenger.CPF,
-                        Name = name,
-                        Gender = gender,
-                        Phone = phone,
-                        DtBirth = pass.DtBirth,
-                        DtRegister = pass.DtRegister,
-                        Status = status,
-                        Address = new AddressServices().GetAddress(zip)
-                    };
-                    _passengerServices.UpdatePassenger(passengerIn, cpf);
-                    pass = _passengerServices.GetPassenger(cpf);
+                    var passengerRestrictedIn = new PassengerRestricted();
+                    passengerRestrictedIn.CPF = passengerIn.CPF;
+                    _passengerRestrictedServices.CreatePassengerRestricted(passengerRestrictedIn);
                 }
                 return Ok(pass);
             }
         }
-
         [HttpDelete]
         public ActionResult DeletePassenger(string cpf)
         {
             var passenger = _passengerServices.GetPassenger(cpf);
-
             if (passenger == null)
             {
                 return NotFound("Passageiro não encontrado!");
@@ -131,7 +118,6 @@ namespace Passengers.Controllers
             else
             {
                 PassengerGarbage passengerGarbage = new();
-
                 passengerGarbage.CPF = passenger.CPF;
                 passengerGarbage.Name = passenger.Name;
                 passengerGarbage.Gender = passenger.Gender;
@@ -140,15 +126,11 @@ namespace Passengers.Controllers
                 passengerGarbage.DtRegister = passenger.DtRegister;
                 passengerGarbage.Status = passenger.Status;
                 passengerGarbage.Address = passenger.Address;
-
                 _passengerServices.RemovePassenger(passenger, cpf);
                 _passengerGarbageServices.CreatePassengerGarbage(passengerGarbage);
-
             }
             return NoContent();
         }
-
-
     }
 
 }

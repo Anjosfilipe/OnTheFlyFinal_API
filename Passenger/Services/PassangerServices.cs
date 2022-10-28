@@ -8,7 +8,6 @@ namespace Passengers.Services
     public class PassengerServices
     {
         private readonly IMongoCollection<Passenger> _passenger;
-
         public PassengerServices(IDataBaseSettings settings)
         {
             var passenger = new MongoClient(settings.ConnectionString);
@@ -28,7 +27,5 @@ namespace Passengers.Services
             GetPassenger(passengerIn.CPF);
         }
         public void RemovePassenger(Passenger passenger, string cpf) => _passenger.DeleteOne(passenger => passenger.CPF == cpf);
-
-
     }
 }
