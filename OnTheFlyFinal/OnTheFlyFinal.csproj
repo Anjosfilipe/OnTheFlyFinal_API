@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Address\Address.csproj" />
+    <ProjectReference Include="..\Aircraft\Aircraft.csproj" />
+    <ProjectReference Include="..\Airport\Airport.csproj" />
+    <ProjectReference Include="..\Company\Company.csproj" />
+    <ProjectReference Include="..\Flight\Flight.csproj" />
+    <ProjectReference Include="..\Passenger\Passenger.csproj" />
+    <ProjectReference Include="..\Sale\Sale.csproj" />
+  </ItemGroup>
+
+</Project>
