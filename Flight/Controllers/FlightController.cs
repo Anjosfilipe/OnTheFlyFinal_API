@@ -17,7 +17,7 @@ namespace Flights.Controllers
         private readonly AircraftServices _airCraftServices;
         private readonly AirportServices _airportServices;
 
-        public FlightController(FlightServices flightServices, AircraftServices airCraftServices, AirportServices airportServices)
+        public FlightController(FlightServices flightServices)//, AircraftServices airCraftServices, AirportServices airportServices)
         {
             _flightServices = flightServices;
             _airCraftServices = airCraftServices;

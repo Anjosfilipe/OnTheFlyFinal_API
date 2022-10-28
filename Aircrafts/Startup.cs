@@ -1,5 +1,6 @@
 using Aircrafts.Services;
 using Aircrafts.Utils;
+using Companys.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -39,6 +40,7 @@ namespace Aircrafts
             IServiceCollection serviceCollection = services.AddSingleton<IDataBaseSettings>(sp => sp.GetRequiredService<IOptions<DataBaseSettings>>().Value);
             services.AddSingleton<AircraftServices>();
             services.AddSingleton<AircraftGarbageServices>();
+        
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

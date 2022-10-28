@@ -8,14 +8,12 @@ namespace Aircrafts.Services
     public class AircraftGarbageServices
     {
         private readonly IMongoCollection<AircraftGarbage> _aircraftGarbage;
-
         public AircraftGarbageServices(IDataBaseSettings settings)
         {
             var aircraft = new MongoClient(settings.ConnectionString);
             var database = aircraft.GetDatabase(settings.AircraftDatabaseName);
             _aircraftGarbage = database.GetCollection<AircraftGarbage>(settings.AircraftGarbageCollectionName);
         }
-
         public AircraftGarbage CreateAircraftGarbage(AircraftGarbage aircraftgarbage)
         {
             _aircraftGarbage.InsertOne(aircraftgarbage);

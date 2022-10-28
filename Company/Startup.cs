@@ -40,6 +40,8 @@ namespace Companys
             services.AddSingleton<CompanyServices>();
             services.AddSingleton<CompanyGarbageServices>();
             services.AddSingleton<CompanyBlockedServices>();
+            services.AddSingleton<CompanyBlockedGarbageServices>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

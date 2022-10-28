@@ -13,7 +13,6 @@ namespace Companys.Services
             var company = new MongoClient(settings.ConnectionString);
             var database = company.GetDatabase(settings.CompanyDatabaseName);
             _company = database.GetCollection<Company>(settings.CompanyCollectionName);
-
         }
         public Company CreateCompany(Company company)
         {
@@ -21,7 +20,6 @@ namespace Companys.Services
             return company;
         }
         public List<Company> GetAllCompany() => _company.Find<Company>(company => true).ToList();
-
         public Company GetCompany(string cnpj) => _company.Find<Company>(company => company.CNPJ == cnpj).FirstOrDefault();
         public void UpdateCompany(Company companyIn, string cnpj)
         {
