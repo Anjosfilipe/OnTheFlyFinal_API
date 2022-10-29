@@ -38,8 +38,10 @@ namespace Aircrafts.Services
 
         public Company GetCompany(string cnpj)
         {
+           
             cnpj = cnpj.Trim();
             cnpj = cnpj.Replace("/", "%2F");
+
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://localhost:44308/api/Company/" + cnpj); //url
             request.AllowAutoRedirect = false;
             HttpWebResponse verificaServidor = (HttpWebResponse)request.GetResponse();
@@ -48,7 +50,6 @@ namespace Aircrafts.Services
             StreamReader answerReader = new StreamReader(stream);
             string message = answerReader.ReadToEnd();
             return new JavaScriptSerializer().Deserialize<Company>(message);
-
 
         }
     }

@@ -35,8 +35,8 @@ namespace Flights
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Flight", Version = "v1" });
             });
-            services.Configure<DataBaseSettings>(Configuration.GetSection(nameof(DataBaseSettings))); 
-            IServiceCollection serviceCollection = services.AddSingleton<IDataBaseSettings>(sp => sp.GetRequiredService<IOptions<DataBaseSettings>>().Value);
+            services.Configure<DataBaseSettings>(Configuration.GetSection(nameof(DataBaseSettings)));
+            services.AddSingleton<IDataBaseSettings>(sp => sp.GetRequiredService<IOptions<DataBaseSettings>>().Value);
             services.AddSingleton<FlightServices>();
         }
 

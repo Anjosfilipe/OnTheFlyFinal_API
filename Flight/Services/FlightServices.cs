@@ -1,8 +1,11 @@
 ﻿using ClassLibrary;
 using Flights.Utils;
 using MongoDB.Driver;
+using Nancy.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Net;
 
 namespace Flights.Services
 {
@@ -27,6 +30,50 @@ namespace Flights.Services
         public void UpdateFlights(Flight fligthsIn)
         {
             _flight.ReplaceOne(flights => flights.Departure == fligthsIn.Departure && flights.Destiny.IATA == fligthsIn.Destiny.IATA, fligthsIn);
+        }
+
+        public Aircraft GetAircraft(string rab)
+        {
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://localhost:44388/api/Aircraft/" + rab); //url
+            request.AllowAutoRedirect = false;
+            HttpWebResponse verificaServidor = (HttpWebResponse)request.GetResponse();
+            Stream stream = verificaServidor.GetResponseStream();
+            if (stream == null) return null;
+            StreamReader answerReader = new StreamReader(stream);
+            string message = answerReader.ReadToEnd();
+            return new JavaScriptSerializer().Deserialize<Aircraft>(message);
+
+        }
+
+        public Airport GetAirport(string iata)
+        {
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://localhost:44386/api/Airport/" + iata); //url
+            request.AllowAutoRedirect = false;
+            HttpWebResponse verificaServidor = (HttpWebResponse)request.GetResponse();
+            Stream stream = verificaServidor.GetResponseStream();
+            if (stream == null) return null;
+            StreamReader answerReader = new StreamReader(stream);
+            string message = answerReader.ReadToEnd();
+            return new JavaScriptSerializer().Deserialize<Airport>(message);
+
+        }
+
+
+        public Company GetCompany(string cnpj)
+        {
+
+            cnpj = cnpj.Trim();
+            cnpj = cnpj.Replace("/", "%2F");
+
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://localhost:44308/api/Company/" + cnpj); //url
+            request.AllowAutoRedirect = false;
+            HttpWebResponse verificaServidor = (HttpWebResponse)request.GetResponse();
+            Stream stream = verificaServidor.GetResponseStream();
+            if (stream == null) return null;
+            StreamReader answerReader = new StreamReader(stream);
+            string message = answerReader.ReadToEnd();
+            return new JavaScriptSerializer().Deserialize<Company>(message);
+
         }
     }
 }

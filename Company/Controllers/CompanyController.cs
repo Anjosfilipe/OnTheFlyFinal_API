@@ -27,6 +27,10 @@ namespace Companys.Controllers
         [HttpPost]
         public ActionResult<Company> CreateCompany(string cnpj, string name, string nameopc, DateTime dtopen, string cep, int numero, string complemento)
         {
+            cnpj = cnpj.Trim();
+            cnpj = cnpj.Replace("/", "").Replace(".", "");
+
+            
             Company company = new Company() { CNPJ = cnpj, Name = name, NameOpt =  nameopc, DtOpen = dtopen, Status = true};    
             var address = _companyServices.GetAddress(cep); // api
             if (address == null)

@@ -14,21 +14,18 @@ namespace Flights.Controllers
     public class FlightController : ControllerBase
     {
         private readonly FlightServices _flightServices;
-        private readonly AircraftServices _airCraftServices;
-        private readonly AirportServices _airportServices;
+    
 
-        public FlightController(FlightServices flightServices)//, AircraftServices airCraftServices, AirportServices airportServices)
-        {
+        public FlightController(FlightServices flightServices)
+        { 
             _flightServices = flightServices;
-            _airCraftServices = airCraftServices;
-            _airportServices = airportServices;
         }
 
         [HttpGet]
         public ActionResult<List<Flight>> GetAllFlights() => _flightServices.GetAllFlights();
 
         [HttpPost]
-        public ActionResult<Flight> PostFlights(string iata, DateTime date, string rab, double hours, double minutes)
+        public ActionResult<Flight> PostFlights(string iata, DateTime date, string rab, double hours, double minutes, string cnpj)
         {
             date = date.AddHours(hours).AddMinutes(minutes);
             iata = iata.ToUpper();
@@ -39,7 +36,7 @@ namespace Flights.Controllers
             else
             {
 
-                var destiny = _airportServices.GetAirports(iata);
+                var destiny = _flightServices.GetAirport(iata);
                 if (destiny == null)
                 {
                     return NotFound("Destino nao encontrado!");
@@ -48,7 +45,7 @@ namespace Flights.Controllers
                 {
 
 
-                    var plane = _airCraftServices.GetAircraft(rab);
+                    var plane = _flightServices.GetAircraft(rab);
 
                     if (plane == null)
                     {
@@ -56,19 +53,19 @@ namespace Flights.Controllers
                     }
                     else
                     {
-                        //var restited = _airCraftServices.GetAircraftRestrited(plane.Company)
-                        //if (restited == true )
-                        //{
-                        //    return NotFound("Infelizmente essa Compania não pode cadastrar voos");
-                        //}
-                        //else
-                        //{
+                        var restited = _flightServices.GetCompany(cnpj);
+                        if (restited.Status == false)
+                        {
+                            return NotFound("Infelizmente essa Compania não pode cadastrar voos");
+                        }
+                        else
+                        {
 
-                        Flight flight = new Flight() { Status = true, Plane = plane, Destiny = destiny, Departure = date };
+                            Flight flight = new Flight() { Status = true, Plane = plane, Destiny = destiny, Departure = date };
 
                         _flightServices.CreateFlights(flight);
                         return Ok(flight);
-                        //}
+                        }
                     }
 
                 }
@@ -81,7 +78,7 @@ namespace Flights.Controllers
         {
             date = date.AddHours(hours - 3).AddMinutes(minutes); // ver esse horario no banco 
             iata = iata.ToUpper();
-            var destiny = _airportServices.GetAirports(iata);
+            var destiny = _flightServices.GetAirport(iata);
             if (destiny == null)
             {
                 return NotFound();
@@ -103,7 +100,7 @@ namespace Flights.Controllers
         {
             date = date.AddHours(hours).AddMinutes(minutes);
             iata = iata.ToUpper();
-            var destiny = _airportServices.GetAirports(iata);
+            var destiny = _flightServices.GetAirport(iata);
             if (destiny == null)
             {
                 return NotFound();
