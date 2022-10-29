@@ -25,11 +25,11 @@ namespace Flights.Services
             return flight;
         }
         public List<Flight> GetAllFlights() => _flight.Find(flights => true).ToList();
-        public Flight GetFlights(string iata, DateTime dateTime) => _flight.Find<Flight>(flights => flights.Departure == dateTime && flights.Destiny.IATA == iata).FirstOrDefault();
+        public Flight GetFlights(string iata, DateTime dateTime) => _flight.Find<Flight>(flights => flights.Departure == dateTime && flights.Destiny.Iata == iata).FirstOrDefault();
 
         public void UpdateFlights(Flight fligthsIn)
         {
-            _flight.ReplaceOne(flights => flights.Departure == fligthsIn.Departure && flights.Destiny.IATA == fligthsIn.Destiny.IATA, fligthsIn);
+            _flight.ReplaceOne(flights => flights.Departure == fligthsIn.Departure && flights.Destiny.Iata == fligthsIn.Destiny.Iata, fligthsIn);
         }
 
         public Aircraft GetAircraft(string rab)

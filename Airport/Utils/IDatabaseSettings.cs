@@ -4,6 +4,6 @@
     {
         string AirportCollectionName { get; set; }
         string ConnectionString { get; set; }
-        string AirportDataBaseName { get; set; }      
+        string AirportDatabaseName { get; set; }      
     }
 }

@@ -43,8 +43,6 @@ namespace Flights.Controllers
                 }
                 else
                 {
-
-
                     var plane = _flightServices.GetAircraft(rab);
 
                     if (plane == null)
@@ -76,7 +74,7 @@ namespace Flights.Controllers
         [HttpGet("{date}", Name = "GetFlights")]
         public ActionResult<Flight> GetFlights(string iata, DateTime date, double hours, double minutes)
         {
-            date = date.AddHours(hours - 3).AddMinutes(minutes); // ver esse horario no banco 
+            date = date.AddHours(hours).AddMinutes(minutes); // ver esse horario no banco 
             iata = iata.ToUpper();
             var destiny = _flightServices.GetAirport(iata);
             if (destiny == null)
@@ -85,7 +83,7 @@ namespace Flights.Controllers
             }
             else
             {
-                var flight = _flightServices.GetFlights(destiny.IATA, date);
+                var flight = _flightServices.GetFlights(destiny.Iata, date);
 
                 if (flight == null)
                 {
@@ -107,7 +105,7 @@ namespace Flights.Controllers
             }
             else
             {
-                var flight = _flightServices.GetFlights(destiny.IATA, date);
+                var flight = _flightServices.GetFlights(destiny.Iata, date);
                 if (flight == null)
                 {
                     return NotFound();

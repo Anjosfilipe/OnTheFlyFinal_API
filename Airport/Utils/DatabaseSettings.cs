@@ -4,7 +4,7 @@
     {
         public string AirportCollectionName { get; set; }
         public string ConnectionString { get; set; }
-        public string AirportDataBaseName { get; set; }
+        public string AirportDatabaseName { get; set; }
 
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace Flights.Utils
+﻿using Flights.Utils;
+
+namespace Saleses.Utils
 {
     public class DataBaseSettings : IDataBaseSettings
     {
