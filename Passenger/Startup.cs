@@ -37,8 +37,8 @@ namespace Passengers
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Passenger", Version = "v1" });
             });
             services.Configure<DataBaseSettings>(Configuration.GetSection(nameof(DataBaseSettings))); 
-            IServiceCollection serviceCollection = services.AddSingleton<IDataBaseSettings>(sp => sp.GetRequiredService<IOptions<DataBaseSettings>>().Value);
-            services.AddSingleton<Passenger>();
+            services.AddSingleton<IDataBaseSettings>(sp => sp.GetRequiredService<IOptions<DataBaseSettings>>().Value);
+            services.AddSingleton<PassengerServices>();
             services.AddSingleton<PassengerGarbageServices>();
             services.AddSingleton<PassengerRestrictedServices>();
             

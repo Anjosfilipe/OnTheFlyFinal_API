@@ -26,4 +26,4 @@ namespace ClassLibrary
         public Address Address { get; set; }
     }
 }
-}
+

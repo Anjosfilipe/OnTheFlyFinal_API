@@ -1,7 +1,13 @@
 ﻿using ClassLibrary;
 using MongoDB.Driver;
+using Nancy.Json;
+using Newtonsoft.Json;
 using Passangers.Utils;
 using System.Collections.Generic;
+using System.IO;
+using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace Passengers.Services
 {
@@ -27,5 +33,19 @@ namespace Passengers.Services
             GetPassenger(passengerIn.CPF);
         }
         public void RemovePassenger(Passenger passenger, string cpf) => _passenger.DeleteOne(passenger => passenger.CPF == cpf);
+
+        public Address GetAddress(string cep)
+        {
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://localhost:44372/api/Address/" + cep); //url
+            request.AllowAutoRedirect = false;
+            HttpWebResponse verificaServidor = (HttpWebResponse)request.GetResponse();
+            Stream stream = verificaServidor.GetResponseStream();
+            if (stream == null) return null;
+            StreamReader answerReader = new StreamReader(stream);
+            string message = answerReader.ReadToEnd();
+            return new JavaScriptSerializer().Deserialize<Address>(message); 
+
+            
+        }
     }
 }

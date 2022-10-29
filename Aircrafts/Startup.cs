@@ -1,6 +1,5 @@
 using Aircrafts.Services;
 using Aircrafts.Utils;
-using Companys.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -36,11 +35,11 @@ namespace Aircrafts
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Aircraft", Version = "v1" });
             });
-            services.Configure<DataBaseSettings>(Configuration.GetSection(nameof(DataBaseSettings))); 
-            IServiceCollection serviceCollection = services.AddSingleton<IDataBaseSettings>(sp => sp.GetRequiredService<IOptions<DataBaseSettings>>().Value);
+            services.Configure<DataBaseSettings>(Configuration.GetSection(nameof(DataBaseSettings)));
+            services.AddSingleton<IDataBaseSettings>(sp => sp.GetRequiredService<IOptions<DataBaseSettings>>().Value);
             services.AddSingleton<AircraftServices>();
             services.AddSingleton<AircraftGarbageServices>();
-        
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

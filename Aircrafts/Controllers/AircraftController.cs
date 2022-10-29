@@ -14,18 +14,18 @@ namespace Aircrafts.Controllers
         ValidationAircraft validation = new ValidationAircraft();
         private readonly AircraftServices _aircraftServices;
         private readonly AircraftGarbageServices _aircraftGarbageServices;
-        private readonly CompanyServices _companyServices;
-        public AircraftController(AircraftServices aircraftServices, AircraftGarbageServices aircraftGarbageServices, CompanyServices companyServices)
+       
+        public AircraftController(AircraftServices aircraftServices, AircraftGarbageServices aircraftGarbageServices)
         {
             _aircraftServices = aircraftServices;
             _aircraftGarbageServices = aircraftGarbageServices;
-            _companyServices = companyServices;
+          
         }
         [HttpPost]
         public ActionResult<Aircraft> PostAircraft(string cnpj, int capacity, string registration)
         {
             Aircraft aircraft = new Aircraft() { Capacity = capacity, RAB = registration, DtLastFlight = System.DateTime.Now, DtRegistry = System.DateTime.Now };
-            Company company = _companyServices.GetCompany(cnpj);
+            Company company = _aircraftServices.GetCompany(cnpj);
             aircraft.Company = company;
             aircraft.RAB = aircraft.RAB.ToLower();
             var rab = validation.RabValidation(aircraft.RAB);
@@ -57,7 +57,7 @@ namespace Aircrafts.Controllers
                 DtLastFlight = dtLastFlight,
                 Capacity = capacity
             };
-            Company company = _companyServices.GetCompany(cnpj);
+            Company company = _aircraftServices.GetCompany(cnpj);
             aircraftIn.Company = company;
             aircraftIn.RAB = aircraftIn.RAB.ToLower();
             var registration = validation.RabValidation(aircraftIn.RAB);

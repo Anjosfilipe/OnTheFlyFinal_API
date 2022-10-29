@@ -10,7 +10,7 @@ namespace Passangers.Controllers
     public class PassengerRestrictedController : ControllerBase
     {
         private readonly PassengerRestrictedServices _passengerRestrictedServices;
-        private readonly PassengerGarbageServices _passengerGarbageServices;
+        //private readonly PassengerGarbageServices _passengerGarbageServices;
         private readonly PassengerServices _passengerServices;
         public PassengerRestrictedController(PassengerServices passengerServices, PassengerRestrictedServices passengerRestrictedServices)
         {

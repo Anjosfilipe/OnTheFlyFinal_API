@@ -1,5 +1,4 @@
-﻿using Addresses.Services;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System;
 using Companys.Utils;
@@ -17,25 +16,25 @@ namespace Companys.Controllers
         private readonly CompanyServices _companyServices;
         private readonly CompanyGarbageServices _companyGarbageServices;
         private readonly CompanyBlockedServices _companyBlockedServices;
-        private readonly AddressServices _addressServices;
-        public CompanyController(CompanyServices companyServices, CompanyGarbageServices companyGarbageServices, CompanyBlockedServices companyBlockedServices, AddressServices addressServices)
+    
+        public CompanyController(CompanyServices companyServices, CompanyGarbageServices companyGarbageServices, CompanyBlockedServices companyBlockedServices)
         {
             _companyServices = companyServices;
             _companyGarbageServices = companyGarbageServices;
             _companyBlockedServices = companyBlockedServices;
-            _addressServices = addressServices;
+          
         }
         [HttpPost]
-        public ActionResult<Company> CreateCompany(Company company)
+        public ActionResult<Company> CreateCompany(string cnpj, string name, string nameopc, DateTime dtopen, string cep, int numero, string complemento)
         {
-            var cep = company.Address.ZipCode;
-            var address = _addressServices.GetAdress(cep).Result; // api
+            Company company = new Company() { CNPJ = cnpj, Name = name, NameOpt =  nameopc, DtOpen = dtopen, Status = true};    
+            var address = _companyServices.GetAddress(cep); // api
             if (address == null)
                 return NotFound("Endereço não encontrado!");
             else
             {
-                address.Number = company.Address.Number;
-                address.Complement = company.Address.Complement;
+                address.Number = numero;
+                address.Complement = complemento;
                 company.Address = address;
             }
             if (companyUtils.IsCnpjValid(company.CNPJ) == false)
@@ -84,7 +83,7 @@ namespace Companys.Controllers
         [HttpPut]
         public ActionResult<Company> PutCompany([FromQuery] string cnpj, string nameOpt, bool status, string cep, int number, string complement)
         {
-            var address = _addressServices.GetAdress(cep).Result; // api 
+            var address = _companyServices.GetAddress(cep); // api 
             if (address == null)
                 return NotFound("Endereço não encontrado!");
             else

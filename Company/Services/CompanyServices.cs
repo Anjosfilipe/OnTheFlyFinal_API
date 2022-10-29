@@ -1,7 +1,11 @@
 ﻿using ClassLibrary;
 using Companys.Utils;
 using MongoDB.Driver;
+using Nancy.Json;
+using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.IO;
+using System.Net;
 
 namespace Companys.Services
 {
@@ -26,5 +30,19 @@ namespace Companys.Services
             _company.ReplaceOne(company => company.CNPJ == cnpj, companyIn);
         }
         public void RemoveCompany(Company companyIn) => _company.DeleteOne(company => company.CNPJ == companyIn.CNPJ);
+
+        public Address GetAddress(string cep)
+        {
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://localhost:44372/api/Address/" + cep); //url
+            request.AllowAutoRedirect = false;
+            HttpWebResponse verificaServidor = (HttpWebResponse)request.GetResponse();
+            Stream stream = verificaServidor.GetResponseStream();
+            if (stream == null) return null;
+            StreamReader answerReader = new StreamReader(stream);
+            string message = answerReader.ReadToEnd();
+            return new JavaScriptSerializer().Deserialize<Address>(message);
+
+
+        }
     }
 }

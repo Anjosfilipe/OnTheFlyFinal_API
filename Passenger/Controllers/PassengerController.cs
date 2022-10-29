@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using Addresses.Services;
 using ClassLibrary;
 using Microsoft.AspNetCore.Mvc;
+using Nancy.Json;
 using Passengers.Services;
 using Passengers.Utils;
+
 
 namespace Passengers.Controllers
 {
@@ -13,13 +14,11 @@ namespace Passengers.Controllers
     public class PassengerController : ControllerBase
     {
         private readonly PassengerServices _passengerServices;
-        private readonly AddressServices _addressServices;
         private readonly PassengerRestrictedServices _passengerRestrictedServices;
         private readonly PassengerGarbageServices _passengerGarbageServices;
-        public PassengerController(PassengerRestrictedServices passengerRestrictedServices, PassengerServices passengerServices, PassengerGarbageServices passengerGarbageServices, AddressServices addressServices)
+        public PassengerController(PassengerRestrictedServices passengerRestrictedServices, PassengerServices passengerServices, PassengerGarbageServices passengerGarbageServices)
         {
             _passengerServices = passengerServices;
-            _addressServices = addressServices;
             _passengerGarbageServices = passengerGarbageServices;
             _passengerRestrictedServices = passengerRestrictedServices;
         }
@@ -47,7 +46,7 @@ namespace Passengers.Controllers
                 DtBirth = dtBirth,
                 Status = true,
                 DtRegister = DateTime.Now,
-                Address = new AddressServices().GetAddress(zip)
+                Address = _passengerServices.GetAddress(zip)
             };
             if (PassengerUtil.ValidateCpf(passenger.CPF) == false)
             {
@@ -71,7 +70,7 @@ namespace Passengers.Controllers
                 passenger.Address.Complement = compl;
                 passenger.Address.Number = number;
             }
-            _addressServices.Create(passenger.Address);
+          
             _passengerServices.CreatePassenger(passenger);
             return CreatedAtRoute("GetCpf", new { CPF = passenger.CPF.ToString() }, passenger);
         }
@@ -94,8 +93,10 @@ namespace Passengers.Controllers
                     Status = status,
                     DtBirth = pass.DtBirth,
                     DtRegister = pass.DtRegister,
-                    Address = new AddressServices().GetAddress(zip)
+                    Address = _passengerServices.GetAddress(zip)
                 };
+               
+
                 _passengerServices.UpdatePassenger(passengerIn, cpf);
                 pass = _passengerServices.GetPassenger(cpf);
                 if (passengerIn.Status != true)

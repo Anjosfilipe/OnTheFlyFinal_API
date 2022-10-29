@@ -36,7 +36,7 @@ namespace Airports
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Airport", Version = "v1" });
             });
             services.Configure<DataBaseSettings>(Configuration.GetSection(nameof(DataBaseSettings)));
-            IServiceCollection serviceCollection = services.AddSingleton<IDataBaseSettings>(sp => sp.GetRequiredService<IOptions<DataBaseSettings>>().Value);
+            services.AddSingleton<IDataBaseSettings>(sp => sp.GetRequiredService<IOptions<DataBaseSettings>>().Value);
             services.AddSingleton<AirportServices>();
         }
 

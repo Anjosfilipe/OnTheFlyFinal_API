@@ -1,5 +1,4 @@
-﻿using Addresses.Services;
-using ClassLibrary;
+﻿using ClassLibrary;
 using Microsoft.AspNetCore.Mvc;
 using Passengers.Services;
 using System.Collections.Generic;
@@ -11,19 +10,17 @@ namespace Passengers.Controllers
     public class PassengerGarbageController : ControllerBase
     {
         private readonly PassengerGarbageServices _passengerGarbageServices;
-        private readonly AddressServices _addressServices;
         private readonly PassengerServices _passengerServices;
-        public PassengerGarbageController(PassengerServices passengerServices, AddressServices address, PassengerGarbageServices passengerGarbageServices)
+        public PassengerGarbageController(PassengerServices passengerServices, PassengerGarbageServices passengerGarbageServices)
         {
             _passengerGarbageServices = passengerGarbageServices;
-            _addressServices = address;
             _passengerServices = passengerServices;
         }
         [HttpPost]
         public ActionResult<PassengerGarbage> PostPassenger(PassengerGarbage passengerGarbage, string cpf)
         {
             Passenger passengerIn = _passengerServices.GetPassenger(cpf);
-            Address address1 = _addressServices.Create(passengerGarbage.Address);
+            Address address1 = _passengerServices.GetAddress(passengerGarbage.Address.ZipCode);
             passengerGarbage.Address = address1;
             passengerGarbage.CPF = passengerIn.CPF;
             passengerGarbage.Name = passengerIn.Name;
