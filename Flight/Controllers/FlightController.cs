@@ -4,8 +4,7 @@ using System.Collections.Generic;
 using System.Xml.Linq;
 using System;
 using Flights.Services;
-using Aircrafts.Services;
-using Airports.Services;
+
 
 namespace Flights.Controllers
 {
@@ -43,6 +42,14 @@ namespace Flights.Controllers
                 }
                 else
                 {
+                    if (rab.Length == 5 || rab.Length == 6)//se for 5 não está formatado se for 6 está formatado
+                    {
+                        rab = rab.ToLower();
+                        rab = rab.Trim();
+                        rab = rab.Replace("-", "");
+                    }
+                    else { return BadRequest("RAB não está de acordo com o tamanho pré estabelecido"); }
+                    rab = rab.Substring(0, 2) + "-" + rab.Substring(2, 3);
                     var plane = _flightServices.GetAircraft(rab);
 
                     if (plane == null)
@@ -51,6 +58,10 @@ namespace Flights.Controllers
                     }
                     else
                     {
+                        cnpj = cnpj.Trim();
+                        cnpj = cnpj.Replace("/", "").Replace(".", "");
+                        cnpj = cnpj.Substring(0, 2).ToString() + "." + cnpj.Substring(2, 3).ToString() + "." + cnpj.Substring(5, 3).ToString() + '/' + cnpj.Substring(8, 4).ToString() + "-" + cnpj.Substring(12, 2).ToString();
+                        
                         var restited = _flightServices.GetCompany(cnpj);
                         if (restited.Status == false)
                         {

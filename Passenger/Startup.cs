@@ -1,4 +1,3 @@
-using ClassLibrary;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -16,7 +15,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Passengers
+namespace Passangers
 {
     public class Startup
     {
@@ -35,13 +34,13 @@ namespace Passengers
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Passenger", Version = "v1" });
+
             });
-            services.Configure<DataBaseSettings>(Configuration.GetSection(nameof(DataBaseSettings))); 
-            services.AddSingleton<IDataBaseSettings>(sp => sp.GetRequiredService<IOptions<DataBaseSettings>>().Value);
+            services.Configure<DatabaseSettings>(Configuration.GetSection(nameof(DatabaseSettings)));
+            services.AddSingleton<IDatabaseSettings>(sp => sp.GetRequiredService<IOptions<DatabaseSettings>>().Value);
             services.AddSingleton<PassengerServices>();
             services.AddSingleton<PassengerGarbageServices>();
             services.AddSingleton<PassengerRestrictedServices>();
-            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

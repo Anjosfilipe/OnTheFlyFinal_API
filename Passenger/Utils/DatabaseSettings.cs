@@ -1,7 +1,7 @@
 ﻿
 namespace Passangers.Utils
 {
-    public class DataBaseSettings
+    public class DatabaseSettings : IDatabaseSettings
     {
 
         public string PassengerCollectionName { get; set; }

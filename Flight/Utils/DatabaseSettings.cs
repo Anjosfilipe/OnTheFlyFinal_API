@@ -1,6 +1,4 @@
-﻿using Flights.Utils;
-
-namespace Saleses.Utils
+﻿namespace Flights.Utils
 {
     public class DataBaseSettings : IDataBaseSettings
     {

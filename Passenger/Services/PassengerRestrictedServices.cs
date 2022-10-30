@@ -8,7 +8,7 @@ namespace Passengers.Services
     public class PassengerRestrictedServices
     {
         private readonly IMongoCollection<PassengerRestricted> _passengerRestrictedServices;
-        public PassengerRestrictedServices(IDataBaseSettings settings)
+        public PassengerRestrictedServices(IDatabaseSettings settings)
         {
             var passenger = new MongoClient(settings.ConnectionString);
             var database = passenger.GetDatabase(settings.PassengerDataBaseName);

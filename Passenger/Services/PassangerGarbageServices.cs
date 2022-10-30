@@ -8,7 +8,7 @@ namespace Passengers.Services
     public class PassengerGarbageServices
     {
         private readonly IMongoCollection<PassengerGarbage> _passengerGarbageServices;
-        public PassengerGarbageServices(IDataBaseSettings settings)
+        public PassengerGarbageServices(IDatabaseSettings settings)
         {
             var passenger = new MongoClient(settings.ConnectionString);
             var database = passenger.GetDatabase(settings.PassengerDataBaseName);

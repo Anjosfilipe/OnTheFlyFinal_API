@@ -14,7 +14,7 @@ namespace Passengers.Services
     public class PassengerServices
     {
         private readonly IMongoCollection<Passenger> _passenger;
-        public PassengerServices(IDataBaseSettings settings)
+        public PassengerServices(IDatabaseSettings settings)
         {
             var passenger = new MongoClient(settings.ConnectionString);
             var database = passenger.GetDatabase(settings.PassengerDataBaseName);
@@ -44,7 +44,6 @@ namespace Passengers.Services
             StreamReader answerReader = new StreamReader(stream);
             string message = answerReader.ReadToEnd();
             return new JavaScriptSerializer().Deserialize<Address>(message); 
-
             
         }
     }

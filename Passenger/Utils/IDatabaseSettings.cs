@@ -1,6 +1,6 @@
 ﻿namespace Passangers.Utils
 {
-    public interface IDataBaseSettings
+    public interface IDatabaseSettings
     {
      
         string PassengerCollectionName { get; set; }

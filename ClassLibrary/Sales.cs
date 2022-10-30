@@ -10,5 +10,8 @@ namespace ClassLibrary
         public List<Passenger> Passagers { get; set; }
         public bool Reserved { get; set; }
         public bool Sold { get; set; }  
+
+
     }
+    
 }
