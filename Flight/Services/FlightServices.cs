@@ -32,6 +32,7 @@ namespace Flights.Services
             _flight.ReplaceOne(flights => flights.Departure == fligthsIn.Departure && flights.Destiny.Iata == fligthsIn.Destiny.Iata, fligthsIn);
         }
 
+        
         public Aircraft GetAircraft(string rab)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://localhost:44388/api/Aircraft/" + rab); //url

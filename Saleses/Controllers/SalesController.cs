@@ -17,8 +17,10 @@ namespace Saleses.Controllers
             _salesservices = salesServices;
         }
 
+
         [HttpGet]
         public ActionResult<List<Sales>> GetAllSales() => _salesservices.GetAllSales();
+
 
         [HttpGet("{cpf}", Name = "GetSales")]
         public ActionResult<Sales> GetSales(string cpf, DateTime date, string rab)
@@ -31,6 +33,7 @@ namespace Saleses.Controllers
             }
             return Ok(sales);
         }
+
 
         [HttpPost]
         public ActionResult<Sales> PostSales(string cpfs, string rab, string iata, DateTime dateflight, double hours, double minutes, bool sold, bool reserverd)
@@ -67,21 +70,34 @@ namespace Saleses.Controllers
             {
                 if (sold == false && reserverd == true)
                 {
-                    //metodo de http clint para alterar o sales de voo = list.cont
+                    if((flight.Sales + listcpf.Length) > flight.Plane.Capacity)
+                    {
+                        return BadRequest("Quantidade de vendas excedidas!");
+                    }
+                    flight.Sales = flight.Sales + listcpf.Length;
+                  
                     Sales sales = new() { Passagers = passagensAtribute };
                     sales.Flight = flight;
                     sales.Reserved = true;
                     sales.Sold = false;
 
+                    _ = _salesservices.PutFlightAsync(flight);
+
                     return Ok(_salesservices.CreateSales(sales));
                 }
                 else if (sold == true && reserverd == false)
-                {
-                    //metodo de http clint para alterar o sales de voo 
+                { 
+                    if ((flight.Sales + listcpf.Length) > flight.Plane.Capacity)
+                    {
+                        return BadRequest("Quantidade de vendas excedidas!");
+                    }
+                    flight.Sales = flight.Sales + listcpf.Length;
+                    
                     Sales sales = new() { Passagers = passagensAtribute };
                     sales.Flight = flight;
                     sales.Reserved = false;
                     sales.Sold = true;
+                    _ = _salesservices.PutFlightAsync(flight);
                     return Ok(_salesservices.CreateSales(sales));
                 }
                 else

@@ -104,8 +104,8 @@ namespace Flights.Controllers
             }
         }
 
-        [HttpPut("{date}")]
-        public ActionResult<Flight> UpdateFlights(string iata, DateTime date, double hours, double minutes, bool status)
+        [HttpPut]
+        public ActionResult<Flight> UpdateFlights(string iata, DateTime date, double hours, double minutes, bool status, int sales)
         {
             date = date.AddHours(hours).AddMinutes(minutes);
             iata = iata.ToUpper();
@@ -124,13 +124,19 @@ namespace Flights.Controllers
                 else
                 {
                     flight.Status = status;
+                    flight.Sales = sales;
                     _flightServices.UpdateFlights(flight);
                     return flight;
 
                 }
             }
+        }
 
-
+        [HttpPut("flight",Name = "Internal")]
+        public ActionResult<Flight> UpdateFlight(Flight flight)
+        {
+            _flightServices.UpdateFlights(flight);
+            return Ok();
         }
     }
 }

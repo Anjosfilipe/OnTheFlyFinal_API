@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
 using ClassLibrary;
 using MongoDB.Driver;
 using Nancy.Json;
+using Newtonsoft.Json;
 using Saleses.Utils;
 
 namespace Saleses.Services
@@ -48,7 +51,7 @@ namespace Saleses.Services
             string message = answerReader.ReadToEnd();
             return new JavaScriptSerializer().Deserialize<Passenger>(message);
         }
-        public Flight GetFlight(string iata, DateTime date, double hours,double minutes)
+        public Flight GetFlight(string iata, DateTime date, double hours, double minutes)
         {
             string datein = date.ToString();
             datein = datein.Trim();
@@ -57,7 +60,7 @@ namespace Saleses.Services
             string dateMounth = datein.Substring(3, 2);
             string dateDay = datein.Substring(0, 2);
 
-            string dateFinal = dateYear+"-"+dateMounth+"-"+dateDay;
+            string dateFinal = dateYear + "-" + dateMounth + "-" + dateDay;
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create($"https://localhost:44353/api/Flight/{dateFinal}?iata={iata}&hours={hours}&minutes={minutes}"); //url
             request.AllowAutoRedirect = false;
             HttpWebResponse verificaServidor = (HttpWebResponse)request.GetResponse();
@@ -67,5 +70,29 @@ namespace Saleses.Services
             string message = answerReader.ReadToEnd();
             return new JavaScriptSerializer().Deserialize<Flight>(message);
         }
+
+        public Flight PutFlight(Flight flight)
+        {
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://localhost:44353/api/Flight/" + flight); //url
+            request.AllowAutoRedirect = false;
+            HttpWebResponse verificaServidor = (HttpWebResponse)request.GetResponse();
+            Stream stream = verificaServidor.GetResponseStream();
+            if (stream == null) return null;
+            StreamReader answerReader = new StreamReader(stream);
+            string message = answerReader.ReadToEnd();
+            return new JavaScriptSerializer().Deserialize<Flight>(message);
+        }
+        public async Task<Flight> PutFlightAsync(Flight flight)
+        {
+            using (HttpClient _adressClient = new())
+            {
+                string fligthPost = JsonConvert.SerializeObject(flight);
+                HttpResponseMessage response = await _adressClient.GetAsync("https://localhost:44353/api/Flight/" + flight);
+                response.EnsureSuccessStatusCode();
+                var json = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<Flight>(json);
+            }
+        }
     }
 }
+
