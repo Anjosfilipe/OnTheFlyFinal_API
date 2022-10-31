@@ -47,119 +47,129 @@ namespace Passengers.Controllers
         {
             cpf = cpf.Trim();
             cpf = cpf.Replace(".", "").Replace("-", "");
-            phone = phone.Trim();
-            phone.Replace("(", "").Replace(")", "").Replace("-", "");
+            cpf = cpf.Substring(0, 3) + "." + cpf.Substring(3, 3) + "." + cpf.Substring(6, 3) + "-" + cpf.Substring(9, 2);
+            //phone = phone.Trim();
+            //phone.Replace("(", "").Replace(")", "").Replace("-", "");
 
             var passengerRestricted = new PassengerRestricted();
+            var passengerExists = new Passenger();
 
-            passengerRestricted = _passengerRestrictedServices.GetPassengerRestricted(cpf);
+            passengerExists = _passengerServices.GetPassenger(cpf);
 
-            if (passengerRestricted == null)
+            if (passengerExists == null)
             {
-                var passenger = new Passenger
+                if (passengerRestricted == null)
                 {
-                    CPF = cpf.Substring(0, 3) + "." + cpf.Substring(3, 3) + "." + cpf.Substring(6, 3) + "-" + cpf.Substring(9, 2),
-                    Name = name,
-                    Gender = gender,
-                    Phone = phone,
-                    DtBirth = dtBirth,
-                    Status = true,
-                    DtRegister = DateTime.Now,
-                    Address = _addressServices.GetAddress(zip)
-                };
-                if (PassengerUtil.ValidateCpf(passenger.CPF) == false)
-                {
-                    return BadRequest("CPF inválido!");
-                }
-                else
-                {
-                    if (phone.Length == 11)
+                    var passenger = new Passenger
                     {
-                        passenger.Phone = passenger.Phone = "(" + phone.Substring(0, 2) + ")" + phone.Substring(2, 5) + "-" + phone.Substring(7, 4);
-                    }
-                    else if (phone.Length == 10)
-                    {
-                        passenger.Phone = passenger.Phone = "(" + phone.Substring(0, 2) + ")" + phone.Substring(2, 4) + "-" + phone.Substring(6, 4);
-                    }
-
-                    else if (passenger.CPF == null)
-                    {
-                        passenger.Address = new Address
-                        {
-                            ZipCode = zip,
-                            Street = street,
-                            City = city,
-                            Complement = compl,
-                            Number = number,
-                            District = district,
-                            State = state
-                        };
-                    }
-                    else
-                    {
-                        passenger.Address.Complement = compl;
-                        passenger.Address.Number = number;
-                    }
-                    //_addressServices.Create(passenger.Address); ******************************************
-                    _passengerServices.CreatePassenger(passenger);
-                    return CreatedAtRoute("GetCpf", new { CPF = passenger.CPF.ToString() }, passenger);
-                }
-            }
-            else
-            {
-                var passenger = new Passenger
-                {
-                    CPF = cpf.Substring(0, 3) + "." + cpf.Substring(3, 3) + "." + cpf.Substring(6, 3) + "-" + cpf.Substring(9, 2),
-                    Name = name,
-                    Gender = gender,
-                    Phone = phone,
-                    DtBirth = dtBirth,
-                    Status = false,
-                    DtRegister = DateTime.Now,
-                    Address = _addressServices.GetAddress(zip)
-                };
-                if (PassengerUtil.ValidateCpf(passenger.CPF) == false)
-                {
-                    return BadRequest("CPF inválido!");
-                }
-                else
-                {
-
-                    if (phone.Length == 11)
-                    {
-                        passenger.Phone = passenger.Phone = "(" + phone.Substring(0, 2) + ")" + phone.Substring(2, 5) + "-" + phone.Substring(7, 4);
-                    }
-                    else if (phone.Length == 10)
-                    {
-                        passenger.Phone = passenger.Phone = "(" + phone.Substring(0, 2) + ")" + phone.Substring(2, 4) + "-" + phone.Substring(6, 4);
-                    }
+                        CPF = cpf,
+                        Name = name,
+                        Gender = gender,
+                        Phone = phone,
+                        DtBirth = dtBirth,
+                        Status = true,
+                        DtRegister = DateTime.Now,
+                        Address = _addressServices.GetAddress(zip)
+                    };
                     if (PassengerUtil.ValidateCpf(passenger.CPF) == false)
                     {
                         return BadRequest("CPF inválido!");
                     }
-                    else if (passenger.CPF == null)
+                    else
                     {
-                        passenger.Address = new Address
+                        if (phone.Length == 11)
                         {
-                            ZipCode = zip,
-                            Street = street,
-                            City = city,
-                            Complement = compl,
-                            Number = number,
-                            District = district,
-                            State = state
-                        };
+                            passenger.Phone = passenger.Phone = "(" + phone.Substring(0, 2) + ")" + phone.Substring(2, 5) + "-" + phone.Substring(7, 4);
+                        }
+                        else if (phone.Length == 10)
+                        {
+                            passenger.Phone = passenger.Phone = "(" + phone.Substring(0, 2) + ")" + phone.Substring(2, 4) + "-" + phone.Substring(6, 4);
+                        }
+
+                        else if (passenger.CPF == null)
+                        {
+                            passenger.Address = new Address
+                            {
+                                ZipCode = zip,
+                                Street = street,
+                                City = city,
+                                Complement = compl,
+                                Number = number,
+                                District = district,
+                                State = state
+                            };
+                        }
+                        else
+                        {
+                            passenger.Address.Complement = compl;
+                            passenger.Address.Number = number;
+                        }
+                        //_addressServices.Create(passenger.Address); ******************************************
+                        _passengerServices.CreatePassenger(passenger);
+                        return CreatedAtRoute("GetCpf", new { CPF = passenger.CPF.ToString() }, passenger);
+                    }
+                }
+                else
+                {
+                    var passenger = new Passenger
+                    {
+                        CPF = cpf,
+                        Name = name,
+                        Gender = gender,
+                        Phone = phone,
+                        DtBirth = dtBirth,
+                        Status = false,
+                        DtRegister = DateTime.Now,
+                        Address = _addressServices.GetAddress(zip)
+                    };
+                    if (PassengerUtil.ValidateCpf(passenger.CPF) == false)
+                    {
+                        return BadRequest("CPF inválido!");
                     }
                     else
                     {
-                        passenger.Address.Complement = compl;
-                        passenger.Address.Number = number;
+
+                        if (phone.Length == 11)
+                        {
+                            passenger.Phone = passenger.Phone = "(" + phone.Substring(0, 2) + ")" + phone.Substring(2, 5) + "-" + phone.Substring(7, 4);
+                        }
+                        else if (phone.Length == 10)
+                        {
+                            passenger.Phone = passenger.Phone = "(" + phone.Substring(0, 2) + ")" + phone.Substring(2, 4) + "-" + phone.Substring(6, 4);
+                        }
+                        if (PassengerUtil.ValidateCpf(passenger.CPF) == false)
+                        {
+                            return BadRequest("CPF inválido!");
+                        }
+                        else if (passenger.CPF == null)
+                        {
+                            passenger.Address = new Address
+                            {
+                                ZipCode = zip,
+                                Street = street,
+                                City = city,
+                                Complement = compl,
+                                Number = number,
+                                District = district,
+                                State = state
+                            };
+                        }
+                        else
+                        {
+                            passenger.Address.Complement = compl;
+                            passenger.Address.Number = number;
+                        }
+                        //_addressServices.Create(passenger.Address); ******************************************
+                        _passengerServices.CreatePassenger(passenger);
+                        return CreatedAtRoute("GetCpf", new { CPF = passenger.CPF.ToString() }, passenger);
                     }
-                    //_addressServices.Create(passenger.Address); ******************************************
-                    _passengerServices.CreatePassenger(passenger);
-                    return CreatedAtRoute("GetCpf", new { CPF = passenger.CPF.ToString() }, passenger);
                 }
             }
+            else
+            {
+                return BadRequest("Cadastro já existe!");
+            }
+            //passengerRestricted = _passengerRestrictedServices.GetPassengerRestricted(cpf);
         }
         [HttpPut]
         public ActionResult<Passenger> PutPassenger([FromQuery] string cpf, string name, char gender, string phone, string zip, string street, string district, int number, string compl, string city, string state, bool status)
@@ -172,6 +182,7 @@ namespace Passengers.Controllers
 
             var pass = new Passenger();
             pass = _passengerServices.GetPassenger(cpf);
+
             if (pass == null)
             {
                 return BadRequest("CPF não encontrado!");

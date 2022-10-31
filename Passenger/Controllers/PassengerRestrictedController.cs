@@ -40,27 +40,36 @@ namespace Passangers.Controllers
             cpf = cpf.Replace(".", "").Replace("-", "");
             cpf = cpf.Substring(0, 3) + "." + cpf.Substring(3, 3) + "." + cpf.Substring(6, 3) + "-" + cpf.Substring(9, 2);
 
-            var passenger = new Passenger();
+            var passengerExists = new PassengerRestricted();
+            passengerExists = _passengerRestrictedServices.GetPassengerRestricted(cpf);
 
-            passenger = _passengerServices.GetPassenger(cpf);
-
-            if (passenger != null)
+            if(passengerExists == null)
             {
-                passenger.Status = false;
-                _passengerServices.UpdatePassenger(passenger, cpf);
+                var passenger = new Passenger();
+                passenger = _passengerServices.GetPassenger(cpf);
 
-                var passengerRestricted = new PassengerRestricted();
-                passengerRestricted.CPF = cpf;
-                _passengerRestrictedServices.CreatePassengerRestricted(passengerRestricted);
+                if (passenger != null)
+                {
+                    passenger.Status = false;
+                    _passengerServices.UpdatePassenger(passenger, cpf);
 
-                return CreatedAtRoute("GetCpfRestricted", new { CPF = passengerRestricted.CPF.ToString() }, passengerRestricted);
+                    var passengerRestricted = new PassengerRestricted();
+                    passengerRestricted.CPF = cpf;
+                    _passengerRestrictedServices.CreatePassengerRestricted(passengerRestricted);
+
+                    return CreatedAtRoute("GetCpfRestricted", new { CPF = passengerRestricted.CPF.ToString() }, passengerRestricted);
+                }
+                else
+                {
+                    var passRestricted = new PassengerRestricted();
+                    passRestricted.CPF = cpf;
+                    _passengerRestrictedServices.CreatePassengerRestricted(passRestricted);
+                    return Ok();
+                }
             }
             else
             {
-                var passRestricted = new PassengerRestricted();
-                passRestricted.CPF = cpf;
-                _passengerRestrictedServices.CreatePassengerRestricted(passRestricted);
-                return Ok();
+                return BadRequest("Cpf já existe!");
             }
         }
         [HttpPut]
