@@ -57,7 +57,7 @@ namespace Flights.Controllers
                     else { return BadRequest("RAB não está de acordo com o tamanho pré estabelecido"); }
                     rab = rab.Substring(0, 2) + "-" + rab.Substring(2, 3);
                     var plane = _aircraftServices.GetAircraft(rab);
-                    
+                    if(plane.Company.Status == false) { return NotFound("Compania Bloqueada!"); }
                     if (plane == null)
                     {
                         return NotFound("Impossivel encontar Aeronave!");
@@ -84,6 +84,7 @@ namespace Flights.Controllers
                         {
                             plane.DtLastFlight = date;
                             Flight flight = new Flight() { Status = true, Plane = plane, Destiny = destiny, Departure = date };
+
 
 
                             _flightServices.CreateFlights(flight);

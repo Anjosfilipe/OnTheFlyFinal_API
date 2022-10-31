@@ -38,6 +38,10 @@ namespace Passengers.Controllers
         [HttpPost]
         public ActionResult<PassengerGarbage> PostPassenger(PassengerGarbage passengerGarbage, string cpf)
         {
+            cpf = cpf.Trim();
+            cpf = cpf.Replace(".", "").Replace("-", "");
+            cpf = cpf.Substring(0, 3) + "." + cpf.Substring(3, 3) + "." + cpf.Substring(6, 3) + "-" + cpf.Substring(9, 2);
+
             Passenger passengerIn = _passengerServices.GetPassenger(cpf);
             Address address1 = _addressServices.GetAddress(passengerIn.Address.ZipCode);
             passengerGarbage.Address = address1;
@@ -55,6 +59,10 @@ namespace Passengers.Controllers
         [HttpDelete]
         public ActionResult DeletePassenger(string cpf)
         {
+            cpf = cpf.Trim();
+            cpf = cpf.Replace(".", "").Replace("-", "");
+            cpf = cpf.Substring(0, 3) + "." + cpf.Substring(3, 3) + "." + cpf.Substring(6, 3) + "-" + cpf.Substring(9, 2);
+
             var passenger = _passengerGarbageServices.GetPassengerGarbage(cpf);
             if (passenger == null)
             {

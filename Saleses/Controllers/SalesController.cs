@@ -73,6 +73,7 @@ namespace Saleses.Controllers
                 }
                 
             }
+           
             iata = iata.ToUpper();
             var flight = _flightServices.GetFlight(iata, dateflight, hours, minutes);
             if (flight == null)
