@@ -16,6 +16,7 @@ namespace Companys.Controllers
         private readonly CompanyServices _companyServices;
         private readonly CompanyGarbageServices _companyGarbageServices;
         private readonly CompanyBlockedServices _companyBlockedServices;
+        private readonly AddressServices _addressServices;
     
         public CompanyController(CompanyServices companyServices, CompanyGarbageServices companyGarbageServices, CompanyBlockedServices companyBlockedServices)
         {
@@ -32,7 +33,7 @@ namespace Companys.Controllers
 
             
             Company company = new Company() { CNPJ = cnpj, Name = name, NameOpt =  nameopc, DtOpen = dtopen, Status = true};    
-            var address = _companyServices.GetAddress(cep); // api
+            var address = _addressServices.GetAddress(cep); // api
             if (address == null)
                 return NotFound("Endereço não encontrado!");
             else
