@@ -20,6 +20,10 @@ namespace Passangers.Controllers
         [HttpGet("{cpf}", Name = "GetCpfRestricted")]
         public ActionResult<Passenger> GetPassengerCpf(string cpf)
         {
+            cpf = cpf.Trim();
+            cpf = cpf.Replace(".", "").Replace("-", "");
+            cpf = cpf.Substring(0, 3) + "." + cpf.Substring(3, 3) + "." + cpf.Substring(6, 3) + "-" + cpf.Substring(9, 2);
+
             var pass = _passengerRestrictedServices.GetPassengerRestricted(cpf);
             if (pass == null)
             {
@@ -32,26 +36,44 @@ namespace Passangers.Controllers
         [HttpPost]
         public ActionResult<PassengerRestricted> PostPassengerRestricted([FromQuery] string cpf) //REVER ESTE METODO
         {
+            cpf = cpf.Trim();
+            cpf = cpf.Replace(".", "").Replace("-", "");
+            cpf = cpf.Substring(0, 3) + "." + cpf.Substring(3, 3) + "." + cpf.Substring(6, 3) + "-" + cpf.Substring(9, 2);
+
             var passenger = new Passenger();
+
             passenger = _passengerServices.GetPassenger(cpf);
-            if (passenger == null)
+
+            if (passenger != null)
             {
-                _passengerServices.CreatePassenger(passenger);
-                return Ok();
+                passenger.Status = false;
+                _passengerServices.UpdatePassenger(passenger, cpf);
+
+                var passengerRestricted = new PassengerRestricted();
+                passengerRestricted.CPF = cpf;
+                _passengerRestrictedServices.CreatePassengerRestricted(passengerRestricted);
+
+                return CreatedAtRoute("GetCpfRestricted", new { CPF = passengerRestricted.CPF.ToString() }, passengerRestricted);
             }
             else
             {
-                var passengerRestricted = new PassengerRestricted();
-                passengerRestricted.CPF = cpf.Substring(0, 3) + "." + cpf.Substring(3, 3) + "." + cpf.Substring(6, 3) + "-" + cpf.Substring(9, 2);
-                _passengerRestrictedServices.CreatePassengerRestricted(passengerRestricted);
-                return CreatedAtRoute("GetCpfRestricted", new { CPF = passengerRestricted.CPF.ToString() }, passengerRestricted);
+                var passRestricted = new PassengerRestricted();
+                passRestricted.CPF = cpf;
+                _passengerRestrictedServices.CreatePassengerRestricted(passRestricted);
+                return Ok();
             }
         }
         [HttpPut]
         public ActionResult<PassengerRestricted> PutPassenger([FromQuery] string cpf)
         {
+            cpf = cpf.Trim();
+            cpf = cpf.Replace(".", "").Replace("-", "");
+            cpf = cpf.Substring(0, 3) + "." + cpf.Substring(3, 3) + "." + cpf.Substring(6, 3) + "-" + cpf.Substring(9, 2);
+
             var pass = new PassengerRestricted();
             pass = _passengerRestrictedServices.GetPassengerRestricted(cpf);
+
+
             if (pass == null)
             {
                 return BadRequest("CPF não encontrado!");
@@ -71,6 +93,10 @@ namespace Passangers.Controllers
         [HttpDelete]
         public ActionResult DeletePassenger(string cpf)
         {
+            cpf = cpf.Trim();
+            cpf = cpf.Replace(".", "").Replace("-", "");
+            cpf = cpf.Substring(0, 3) + "." + cpf.Substring(3, 3) + "." + cpf.Substring(6, 3) + "-" + cpf.Substring(9, 2);
+
             var passenger = _passengerRestrictedServices.GetPassengerRestricted(cpf);
             if (passenger == null)
             {
@@ -79,7 +105,9 @@ namespace Passangers.Controllers
             else
             {
                 var pass = new Passenger();
+
                 pass = _passengerServices.GetPassenger(cpf);
+
                 if (pass == null)
                 {
                     _passengerRestrictedServices.RemovePassengerRestricted(passenger, cpf);
