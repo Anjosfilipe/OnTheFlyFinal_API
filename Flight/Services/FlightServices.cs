@@ -32,49 +32,5 @@ namespace Flights.Services
             _flight.ReplaceOne(flights => flights.Departure == fligthsIn.Departure && flights.Destiny.Iata == fligthsIn.Destiny.Iata, fligthsIn);
         }
 
-        
-        public Aircraft GetAircraft(string rab)
-        {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://localhost:44388/api/Aircraft/" + rab); //url
-            request.AllowAutoRedirect = false;
-            HttpWebResponse verificaServidor = (HttpWebResponse)request.GetResponse();
-            Stream stream = verificaServidor.GetResponseStream();
-            if (stream == null) return null;
-            StreamReader answerReader = new StreamReader(stream);
-            string message = answerReader.ReadToEnd();
-            return new JavaScriptSerializer().Deserialize<Aircraft>(message);
-
-        }
-
-        public Airport GetAirport(string iata)
-        {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://localhost:44386/api/Airport/" + iata); //url
-            request.AllowAutoRedirect = false;
-            HttpWebResponse verificaServidor = (HttpWebResponse)request.GetResponse();
-            Stream stream = verificaServidor.GetResponseStream();
-            if (stream == null) return null;
-            StreamReader answerReader = new StreamReader(stream);
-            string message = answerReader.ReadToEnd();
-            return new JavaScriptSerializer().Deserialize<Airport>(message);
-
-        }
-
-
-        public Company GetCompany(string cnpj)
-        {
-
-            cnpj = cnpj.Trim();
-            cnpj = cnpj.Replace("/", "%2F");
-
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://localhost:44308/api/Company/" + cnpj); //url
-            request.AllowAutoRedirect = false;
-            HttpWebResponse verificaServidor = (HttpWebResponse)request.GetResponse();
-            Stream stream = verificaServidor.GetResponseStream();
-            if (stream == null) return null;
-            StreamReader answerReader = new StreamReader(stream);
-            string message = answerReader.ReadToEnd();
-            return new JavaScriptSerializer().Deserialize<Company>(message);
-
-        }
     }
 }

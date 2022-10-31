@@ -10,23 +10,29 @@ namespace Saleses.Controllers
     [ApiController]
     public class SalesController : ControllerBase
     {
-        private readonly SalesServices _salesservices;
+        private readonly SalesServices _salesServices;
+        private readonly PassengerServices _passengerServices;
+        private readonly FlightServices _flightServices;
 
-        public SalesController(SalesServices salesServices)
+        public SalesController(SalesServices salesServices, PassengerServices passengerServices, FlightServices flightServices)
         {
-            _salesservices = salesServices;
+            _salesServices = salesServices;
+            _passengerServices = passengerServices;
+            _flightServices = flightServices;
         }
 
-
         [HttpGet]
-        public ActionResult<List<Sales>> GetAllSales() => _salesservices.GetAllSales();
+        public ActionResult<List<Sales>> GetAllSales() => _salesServices.GetAllSales();
 
 
         [HttpGet("{cpf}", Name = "GetSales")]
-        public ActionResult<Sales> GetSales(string cpf, DateTime date, string rab)
+        public ActionResult<Sales> GetSales(string cpf)
         {
+            cpf = cpf.Trim();
+            cpf = cpf.Replace(".", "").Replace("-", "");
+            cpf = cpf.Substring(0, 3) + "." + cpf.Substring(3, 3) + "." + cpf.Substring(6, 3) + "-" + cpf.Substring(9, 2);
 
-            var sales = _salesservices.GetSales(cpf, date, rab);
+            var sales = _salesServices.GetSales(cpf);
             if (sales == null)
             {
                 return NotFound();
@@ -41,12 +47,19 @@ namespace Saleses.Controllers
             string[] listcpf = cpfs.Split(',');
             List<Passenger> passagensAtribute = new List<Passenger>();
 
+            if (rab.Length == 5 || rab.Length == 6)//se for 5 não está formatado se for 6 está formatado
+            {
+                rab = rab.ToLower();
+                rab = rab.Trim();
+                rab = rab.Replace("-", "");
+            }
+            else { return BadRequest("Dados de Rab inconsistente"); }
 
             for (int i = 0; i < listcpf.Length; i++)
             {
                 string cpfperson = listcpf[i];
                 cpfperson = cpfperson.Substring(0, 3) + "." + cpfperson.Substring(3, 3) + "." + cpfperson.Substring(6, 3) + "-" + cpfperson.Substring(9, 2);
-                var passenger = _salesservices.GetPassenger(cpfperson);
+                var passenger = _passengerServices.GetPassenger(cpfperson);
                 if (passenger == null)
                 {
                     return BadRequest($"Não encotramos esse Cpf{listcpf[i]} em nossos Cadastros de Passageiro!");
@@ -60,8 +73,8 @@ namespace Saleses.Controllers
                 }
                 
             }
-
-            var flight = _salesservices.GetFlight(iata, dateflight, hours, minutes);
+            iata = iata.ToUpper();
+            var flight = _flightServices.GetFlight(iata, dateflight, hours, minutes);
             if (flight == null)
             {
                 return BadRequest("Voo não localizado!");
@@ -81,9 +94,9 @@ namespace Saleses.Controllers
                     sales.Reserved = true;
                     sales.Sold = false;
 
-                    _ = _salesservices.PutFlightAsync(flight);
+                   _= _flightServices.PutflightNew(flight, dateflight, hours, minutes);
 
-                    return Ok(_salesservices.CreateSales(sales));
+                    return Ok(_salesServices.CreateSales(sales));
                 }
                 else if (sold == true && reserverd == false)
                 { 
@@ -97,8 +110,8 @@ namespace Saleses.Controllers
                     sales.Flight = flight;
                     sales.Reserved = false;
                     sales.Sold = true;
-                    _ = _salesservices.PutFlightAsync(flight);
-                    return Ok(_salesservices.CreateSales(sales));
+                    _= _flightServices.PutflightNew(flight, dateflight, hours, minutes);
+                    return Ok(_salesServices.CreateSales(sales));
                 }
                 else
                 {

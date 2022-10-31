@@ -38,6 +38,14 @@ namespace Saleses
             services.Configure<DataBaseSettings>(Configuration.GetSection(nameof(DataBaseSettings)));
             services.AddSingleton<IDataBaseSettings>(sp => sp.GetRequiredService<IOptions<DataBaseSettings>>().Value);
             services.AddSingleton<SalesServices>();
+
+            services.Configure<PassengerServicesSettings>(Configuration.GetSection(nameof(PassengerServicesSettings)));
+            services.AddSingleton<IPassengerServicesSettings>(sp => sp.GetRequiredService<IOptions<PassengerServicesSettings>>().Value);
+            services.AddSingleton<PassengerServices>();
+
+            services.Configure<FlightServiceSettings>(Configuration.GetSection(nameof(FlightServiceSettings)));
+            services.AddSingleton<IFlightServicesSettings>(sp => sp.GetRequiredService<IOptions<FlightServiceSettings>>().Value);
+            services.AddSingleton<FlightServices>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

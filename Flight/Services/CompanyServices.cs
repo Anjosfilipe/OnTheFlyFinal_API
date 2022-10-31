@@ -16,7 +16,7 @@ namespace Flights.Services
         {
             cnpj = cnpj.Trim();
             cnpj = cnpj.Replace("/", "%2F");
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create("api/Company/" + cnpj); //url
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(_settings.Address+"api/Company/" + cnpj); //url
             request.AllowAutoRedirect = false;
             HttpWebResponse verificaServidor = (HttpWebResponse)request.GetResponse();
             Stream stream = verificaServidor.GetResponseStream();
