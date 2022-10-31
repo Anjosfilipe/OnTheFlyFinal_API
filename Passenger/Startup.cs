@@ -10,6 +10,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Passangers.Utils;
 using Passengers.Services;
+using Passengers.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,6 +42,10 @@ namespace Passangers
             services.AddSingleton<PassengerServices>();
             services.AddSingleton<PassengerGarbageServices>();
             services.AddSingleton<PassengerRestrictedServices>();
+
+            services.Configure<AddressServicesSettings>(Configuration.GetSection(nameof(AddressServicesSettings)));
+            services.AddSingleton<IAddressServicesSettings>(sp => sp.GetRequiredService<IOptions<AddressServicesSettings>>().Value);
+            services.AddSingleton<AddressServices>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

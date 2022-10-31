@@ -10,17 +10,36 @@ namespace Passengers.Controllers
     public class PassengerGarbageController : ControllerBase
     {
         private readonly PassengerGarbageServices _passengerGarbageServices;
+        private readonly AddressServices _addressServices;
         private readonly PassengerServices _passengerServices;
-        public PassengerGarbageController(PassengerServices passengerServices, PassengerGarbageServices passengerGarbageServices)
+        public PassengerGarbageController(PassengerServices passengerServices, AddressServices address, PassengerGarbageServices passengerGarbageServices)
         {
             _passengerGarbageServices = passengerGarbageServices;
+            _addressServices = address;
             _passengerServices = passengerServices;
         }
+        [HttpGet("{cpf}", Name = "GetPassengerGarbage")]
+        public ActionResult<PassengerGarbage> GetPassenger(string cpf)
+        {
+            cpf = cpf.Trim();
+            cpf = cpf.Replace(".", "").Replace("-", "");
+            cpf = cpf.Substring(0, 3) + "." + cpf.Substring(3, 3) + "." + cpf.Substring(6, 3) + "-" + cpf.Substring(9, 2);
+            var pass = _passengerGarbageServices.GetPassengerGarbage(cpf);
+            {
+                if (pass == null)
+                {
+                    return NotFound();
+                }
+                return Ok(pass);
+            }
+        }
+        [HttpGet]
+        public ActionResult<List<PassengerGarbage>> GetAllPassengersGarbage() => _passengerGarbageServices.GetAllPassengersGarbage();
         [HttpPost]
         public ActionResult<PassengerGarbage> PostPassenger(PassengerGarbage passengerGarbage, string cpf)
         {
             Passenger passengerIn = _passengerServices.GetPassenger(cpf);
-            Address address1 = _passengerServices.GetAddress(passengerGarbage.Address.ZipCode);
+            Address address1 = _addressServices.GetAddress(passengerIn.Address.ZipCode);
             passengerGarbage.Address = address1;
             passengerGarbage.CPF = passengerIn.CPF;
             passengerGarbage.Name = passengerIn.Name;
@@ -33,19 +52,22 @@ namespace Passengers.Controllers
             _passengerGarbageServices.CreatePassengerGarbage(passengerGarbage);
             return CreatedAtRoute("GetPassengerGarbage", new { cpf = passengerIn.CPF.ToString() }, passengerIn);
         }
-        [HttpGet("{cpf}", Name = "GetPassengerGarbage")]
-        public ActionResult<PassengerGarbage> GetPassenger(string cpf)
+        [HttpDelete]
+        public ActionResult DeletePassenger(string cpf)
         {
-            var pass = _passengerGarbageServices.GetPassengerGarbage(cpf);
+            var passenger = _passengerGarbageServices.GetPassengerGarbage(cpf);
+            if (passenger == null)
             {
-                if (pass == null)
-                {
-                    return NotFound();
-                }
-                return Ok(pass);
+                return NotFound("Passageiro não encontrado!");
             }
+            else
+            {
+                PassengerGarbage passengerGarbage = new();
+                passengerGarbage = passenger;
+                var passageiro = new Passenger();
+                _passengerGarbageServices.RemoveGarbagePassenger(passenger, cpf);
+            }
+            return NoContent();
         }
-        [HttpGet]
-        public ActionResult<List<PassengerGarbage>> GetAllPassengersGarbage() => _passengerGarbageServices.GetAllPassengersGarbage();
     }
 }

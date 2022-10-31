@@ -22,7 +22,6 @@ namespace ClassLibrary
         [Required(ErrorMessage = "O campo Data de Nascimento é obrigatório!")]
         [DataType(DataType.Date)]
         public DateTime DtBirth { get; set; }
-        [DisplayFormat(DataFormatString = "mm/dd/yyyy")]
         public DateTime DtRegister { get; set; }
         public bool Status { get; set; }
         public Address Address { get; set; }

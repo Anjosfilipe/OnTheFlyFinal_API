@@ -8,22 +8,23 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace ClassLibrary
 {
-      [BsonIgnoreExtraElements]
-        public class CompanyBlockedGarbage
-        {
-            [Required(ErrorMessage = "Este campo é obrigatório!")]
-            [StringLength(19, ErrorMessage = "Número de CNPJ inválido")]
-            public string CNPJ { get; set; }
-            [Required(ErrorMessage = "Este campo é obrigatório!")]
-            [StringLength(30, ErrorMessage = "Nome inválido")]
-            public string Name { get; set; }
-            [Required(ErrorMessage = "Este campo é obrigatório!")]
-            [StringLength(30, ErrorMessage = "Nome inválido")]
-            public string NameOpt { get; set; }
-            [Required(ErrorMessage = "Este campo é obrigatório!")]
-            public DateTime DtOpen { get; set; }
-            public bool? Status { get; set; }
-            public Address Address { get; set; }
-        }
-    
+    [BsonIgnoreExtraElements]
+    public class CompanyBlockedGarbage
+    {
+        [Required(ErrorMessage = "Este campo é obrigatório!")]
+        [StringLength(19, ErrorMessage = "Número de CNPJ inválido")]
+        public string CNPJ { get; set; }
+        [Required(ErrorMessage = "Este campo é obrigatório!")]
+        [StringLength(30, ErrorMessage = "Nome inválido")]
+        public string Name { get; set; }
+        [Required(ErrorMessage = "Este campo é obrigatório!")]
+        [StringLength(30, ErrorMessage = "Nome inválido")]
+        public string NameOpt { get; set; }
+        [Required(ErrorMessage = "Este campo é obrigatório!")]
+        [DataType(DataType.Date)]
+        public DateTime DtOpen { get; set; }
+        public bool? Status { get; set; }
+        public Address Address { get; set; }
+    }
+
 }

@@ -38,6 +38,16 @@ namespace Flights
             services.Configure<DataBaseSettings>(Configuration.GetSection(nameof(DataBaseSettings)));
             services.AddSingleton<IDataBaseSettings>(sp => sp.GetRequiredService<IOptions<DataBaseSettings>>().Value);
             services.AddSingleton<FlightServices>();
+            services.Configure<AirportServicesSettings>(Configuration.GetSection(nameof(AirportServicesSettings)));
+            services.AddSingleton<IAirportServicesSettings>(sp => sp.GetRequiredService<IOptions<AirportServicesSettings>>().Value);
+            services.AddSingleton<AirportServices>();
+            services.Configure<CompanyServicesSettings>(Configuration.GetSection(nameof(CompanyServicesSettings)));
+            services.AddSingleton<ICompanyServicesSettings>(sp => sp.GetRequiredService<IOptions<CompanyServicesSettings>>().Value);
+            services.AddSingleton<CompanyServices>();
+            services.Configure<AircraftServicesSettings>(Configuration.GetSection(nameof(AircraftServicesSettings)));
+            services.AddSingleton<IAircraftServicesSettings>(sp => sp.GetRequiredService<IOptions<AircraftServicesSettings>>().Value);
+            services.AddSingleton<AircraftServices>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

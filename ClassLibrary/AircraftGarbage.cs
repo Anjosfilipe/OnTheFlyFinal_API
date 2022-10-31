@@ -14,7 +14,9 @@ namespace ClassLibrary
         [Required(ErrorMessage = "Este campo é obrigatório!")]
         public int Capacity { get; set; }
         [Required(ErrorMessage = "Este campo é obrigatório!")]
+        [DataType(DataType.Date)]
         public DateTime DtRegistry { get; set; }
+        [DataType(DataType.Date)]
         public DateTime DtLastFlight { get; set; }
         [Required(ErrorMessage = "Este campo é obrigatório!"), StringLength(19, ErrorMessage = "CNPJ inválido!")]
         public Company Company { get; set; }

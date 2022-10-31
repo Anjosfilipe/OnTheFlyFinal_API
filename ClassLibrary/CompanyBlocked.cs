@@ -21,6 +21,7 @@ namespace ClassLibrary
         [StringLength(30, ErrorMessage = "Nome inválido")]
         public string NameOpt { get; set; }
         [Required(ErrorMessage = "Este campo é obrigatório!")]
+        [DataType(DataType.Date)]
         public DateTime DtOpen { get; set; }
         public bool? Status { get; set; }
         public Address Address { get; set; }

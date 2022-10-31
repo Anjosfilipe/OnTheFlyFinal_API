@@ -21,5 +21,7 @@ namespace Passengers.Services
         }
         public List<PassengerRestricted> GetAllPassengersRestricteds() => _passengerRestrictedServices.Find(passengerRestricted => true).ToList();
         public PassengerRestricted GetPassengerRestricted(string cpf) => _passengerRestrictedServices.Find<PassengerRestricted>(passengerRestricted => passengerRestricted.CPF == cpf).FirstOrDefault();
+
+        public void RemovePassengerRestricted(PassengerRestricted passengerRestricted, string cpf) => _passengerRestrictedServices.DeleteOne(passenger => passenger.CPF == cpf);
     }
 }
