@@ -102,8 +102,6 @@ namespace Aircrafts.Controllers
                 rab = rab.Replace("-", "");
             }
             else { return BadRequest("RAB não está de acordo com o tamanho pré estabelecido"); }
-            var dtlf = dtLastFlight.ToString("dd/MM/yyyy");
-            dtLastFlight = DateTime.Parse(dtlf);
             Aircraft aircraftIn = new Aircraft()
             {
                 RAB = rab,
@@ -131,12 +129,34 @@ namespace Aircrafts.Controllers
             var aircraft = _aircraftServices.GetAircraft(aircraftIn.RAB);
             if (aircraft == null) return NotFound("Aeronave não encontrada!");
             aircraftIn.DtRegistry = aircraft.DtRegistry;
-            var dtRegistry = aircraft.DtRegistry.ToString("dd/MM/yyyy");
+            //validações para data de úlimo voo
+            var dtlf = dtLastFlight.ToString("dd/MM/yyyy");
+            int dtlfDay = int.Parse(dtLastFlight.ToString("dd"));
+            int dtlfMonth = int.Parse(dtLastFlight.ToString("MM"));
+            int dtlfYear = int.Parse(dtLastFlight.ToString("yyyy"));
+            dtLastFlight = DateTime.Parse(dtlf);
+            // var dtRegistry = aircraft.DtRegistry.ToString("dd/MM/yyyy");
+            int dtRegistryDay = int.Parse(aircraft.DtRegistry.ToString("dd"));
+            int dtRegistryMonth = int.Parse(aircraft.DtRegistry.ToString("MM"));
+            int dtRegistryYear = int.Parse(aircraft.DtRegistry.ToString("yyyy"));
             var dtNull = ("01/01/0001");
             if (dtlf != dtNull)
             {
-                if (dtlf.CompareTo(dtRegistry) < 0)
-                    return BadRequest("Data de último voo é um valor anterior a data de registro da aeronave");
+                if (dtlfDay <= dtRegistryDay)
+                {
+                    if ((dtlfMonth < dtRegistryMonth) && (dtlfYear == dtRegistryYear))
+                    {
+                        return BadRequest("Data de último voo é um valor anterior a data de registro da aeronave");
+                    }
+                    if ((dtlfMonth < dtRegistryMonth) && (dtlfYear < dtRegistryYear))
+                    {
+                        return BadRequest("Data de último voo é um valor anterior a data de registro da aeronave");
+                    }
+                    if ((dtlfMonth == dtRegistryMonth) && (dtlfYear < dtRegistryYear))
+                    {
+                        return BadRequest("Data de último voo é um valor anterior a data de registro da aeronave");
+                    }
+                }
             }
             _aircraftServices.UpdateAircraft(aircraft.RAB, aircraftIn);
             return NoContent();
@@ -156,7 +176,7 @@ namespace Aircrafts.Controllers
             var aircraft = _aircraftServices.GetAircraft(rab);
             if (aircraft == null) return NotFound("Aeronave não encontrada!");
             AircraftGarbage aircraftGarbage = new AircraftGarbage();    //crio novo objeto
-            //populo esse novo objeto,"clone" do objeto que estava fora da lixeira
+                                                                        //populo esse novo objeto,"clone" do objeto que estava fora da lixeira
             aircraftGarbage.RAB = aircraft.RAB;
             aircraftGarbage.Capacity = aircraft.Capacity;
             aircraftGarbage.DtRegistry = aircraft.DtRegistry;
