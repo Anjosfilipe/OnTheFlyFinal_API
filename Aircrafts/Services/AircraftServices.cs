@@ -5,7 +5,6 @@ using ClassLibrary;
 using System.Net;
 using System.IO;
 using Nancy.Json;
-
 namespace Aircrafts.Services
 {
     public class AircraftServices
@@ -34,23 +33,6 @@ namespace Aircrafts.Services
         {
             string test = aircraft.RAB;
             _aircraft.DeleteOne(aircraft => aircraft.RAB == test);
-        }
-
-        public Company GetCompany(string cnpj)
-        {
-           
-            cnpj = cnpj.Trim();
-            cnpj = cnpj.Replace("/", "%2F");
-
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://localhost:44308/api/Company/" + cnpj); //url
-            request.AllowAutoRedirect = false;
-            HttpWebResponse verificaServidor = (HttpWebResponse)request.GetResponse();
-            Stream stream = verificaServidor.GetResponseStream();
-            if (stream == null) return null;
-            StreamReader answerReader = new StreamReader(stream);
-            string message = answerReader.ReadToEnd();
-            return new JavaScriptSerializer().Deserialize<Company>(message);
-
         }
     }
 }

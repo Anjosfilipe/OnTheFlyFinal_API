@@ -17,39 +17,40 @@ namespace Companys.Controllers
         private readonly CompanyGarbageServices _companyGarbageServices;
         private readonly CompanyBlockedServices _companyBlockedServices;
         private readonly AddressServices _addressServices;
-    
-        public CompanyController(CompanyServices companyServices, CompanyGarbageServices companyGarbageServices, CompanyBlockedServices companyBlockedServices)
+
+        public CompanyController(CompanyServices companyServices, CompanyGarbageServices companyGarbageServices, CompanyBlockedServices companyBlockedServices,AddressServices addressServices)
         {
             _companyServices = companyServices;
             _companyGarbageServices = companyGarbageServices;
             _companyBlockedServices = companyBlockedServices;
-          
+            _addressServices = addressServices;
         }
+
         [HttpPost]
-        public ActionResult<Company> CreateCompany(string cnpj, string name, string nameopc, DateTime dtopen, string cep, int numero, string complemento)
+        public ActionResult<Company> CreateCompany(string cnpj, string name, string nameopc, DateTime dtopen, string cep, int number, string complement)
         {
             cnpj = cnpj.Trim();
             cnpj = cnpj.Replace("/", "").Replace(".", "");
-
-            
-            Company company = new Company() { CNPJ = cnpj, Name = name, NameOpt =  nameopc, DtOpen = dtopen, Status = true};    
-            var address = _addressServices.GetAddress(cep); // api
-            if (address == null)
-                return NotFound("Endereço não encontrado!");
+            cnpj = cnpj.Replace(".", "").Replace("-", "").Replace("/", "").Replace(" ", "");
+            cnpj = cnpj.Replace("+", "").Replace("*", "").Replace(",", "").Replace("?", "");
+            cnpj = cnpj.Replace("!", "").Replace("@", "").Replace("#", "").Replace("$", "");
+            cnpj = cnpj.Replace("%", "").Replace("¨", "").Replace("&", "").Replace("(", "");
+            cnpj = cnpj.Replace("=", "").Replace("[", "").Replace("]", "").Replace(")", "");
+            cnpj = cnpj.Replace("{", "").Replace("}", "").Replace(":", "").Replace(";", "");
+            cnpj = cnpj.Replace("<", "").Replace(">", "").Replace("ç", "").Replace("Ç", "");
+            Company company = new Company() { CNPJ = cnpj, Name = name, NameOpt = nameopc, DtOpen = dtopen, Status = true };
+            company.Address = _addressServices.GetAddress(cep); // api
+            if (company.Address == null) return NotFound("Endereço não encontrado!");
             else
             {
-                address.Number = numero;
-                address.Complement = complemento;
-                company.Address = address;
+                company.Address.Number = number;
+                company.Address.Complement = complement;
             }
-            if (companyUtils.IsCnpjValid(company.CNPJ) == false)
-            {
-                return BadRequest("CNPJ inválido!");
-            }
+            if (companyUtils.IsCnpjValid(company.CNPJ) == false) return BadRequest("CNPJ inválido!");
             else
             {
                 var Cnpj = company.CNPJ;
-                company.CNPJ = Cnpj.Substring(0, 2).ToString() + "." + Cnpj.Substring(2, 3).ToString() + "." + Cnpj.Substring(5, 3).ToString() + '/' + Cnpj.Substring(8, 4).ToString() + "-" + Cnpj.Substring(12, 2).ToString();
+                company.CNPJ = Cnpj[..2].ToString() + "." + Cnpj.Substring(2, 3).ToString() + "." + Cnpj.Substring(5, 3).ToString() + '/' + Cnpj.Substring(8, 4).ToString() + "-" + Cnpj.Substring(12, 2).ToString();
                 var comp = _companyServices.GetCompany(company.CNPJ);
                 if (comp != null) return BadRequest("Companhia já cadastrada com esse CNPJ!");
                 if (company.NameOpt == null)
@@ -80,25 +81,22 @@ namespace Companys.Controllers
             cnpj = cnpj.Trim();
             cnpj = cnpj.Replace("%2F", "/");
             var company = _companyServices.GetCompany(cnpj);
-            if (company == null)
-                if (company == null)
-                    return NotFound("Algo deu errado na requisição, companhia não encontrada!");
+            if (company == null) return NotFound("Algo deu errado na requisição, companhia não encontrada!");
             return Ok(company);
         }
         [HttpPut]
         public ActionResult<Company> PutCompany([FromQuery] string cnpj, string nameOpt, bool status, string cep, int number, string complement)
         {
-            var address = _companyServices.GetAddress(cep); // api 
+            //passo cnpj formatado e dou um trim ?
+            var address = _addressServices.GetAddress(cep); // api
             if (address == null)
                 return NotFound("Endereço não encontrado!");
             else
             {
                 Company companyIn = new() { CNPJ = cnpj, NameOpt = nameOpt, Status = status };
-                if (companyUtils.IsCnpjValid(companyIn.CNPJ) == false)
-                    return BadRequest("CNPJ inválido!");
+                if (companyUtils.IsCnpjValid(companyIn.CNPJ) == false) return BadRequest("CNPJ inválido!");
                 var company = _companyServices.GetCompany(cnpj);
-                if (company == null)
-                    return NotFound("Algo deu errado na requisição, companhia não encontrada!");
+                if (company == null) return NotFound("Algo deu errado na requisição, companhia não encontrada!");
                 companyIn.Name = company.Name;
                 companyIn.Address = address;
                 companyIn.Address.Number = number;
@@ -107,14 +105,15 @@ namespace Companys.Controllers
                 _companyServices.UpdateCompany(companyIn, cnpj);
                 if (company.Status == false)
                 {
+                    //crio "clonando" a msm comp com somente o cnpj no bloqueados
                     CompanyBlocked companyBlocked = new()
                     {
                         CNPJ = company.CNPJ,
-                        Name = company.Name,
-                        NameOpt = company.NameOpt,
-                        DtOpen = company.DtOpen,
-                        Status = company.Status,
-                        Address = company.Address
+                        //Name = company.Name,
+                        //NameOpt = company.NameOpt,
+                        //DtOpen = company.DtOpen,
+                        //Status = company.Status,
+                        //Address = company.Address
                     };
                     _companyBlockedServices.CreateCompanyBlocked(companyBlocked);
                 }
@@ -124,6 +123,7 @@ namespace Companys.Controllers
         [HttpDelete]
         public ActionResult<Company> DeleteCompany(string cnpj)
         {
+            //se eu fizer o post de aeronave aqui, preciso deletar junto a aeronave tb
             cnpj = cnpj.Trim();
             cnpj = cnpj.Replace("%2F", "/");
             var company = _companyServices.GetCompany(cnpj);

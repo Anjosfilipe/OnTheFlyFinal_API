@@ -9,18 +9,10 @@ namespace Addresses.Services
 {
     public class AddressServices
     {
-        private readonly IMongoCollection<Address> _address;
-
-        public AddressServices()
+        private readonly IAddressServicesSettings _settings;
+        public AddressServices(IAddressServicesSettings settings)
         {
-
-        }
-        public AddressServices(IDataBaseSettings settings)
-        {
-            var address = new MongoClient(settings.ConnectionString);
-            var database = address.GetDatabase(settings.PassengerDataBaseName);
-            _address = database.GetCollection<Address>(settings.AddressCollectionName);
-
+            _settings = settings;
         }
         public Address GetAddress(string cep)
         {
@@ -33,16 +25,5 @@ namespace Addresses.Services
             string message = answerReader.ReadToEnd();
             return JsonConvert.DeserializeObject<Address>(message);
         }
-        public Address Create(Address address)
-        {
-            _address.InsertOne(address);
-            return address;
-        }
-        public List<Address> Get() => _address.Find(address => true).ToList();
-        public void Update(string ID, Address AddressIN)
-        {
-            _address.ReplaceOne(address => address.ZipCode == ID, AddressIN);
-        }
-        public void Remove(Address AddressIN) => _address.DeleteOne(address => address.ZipCode == address.ZipCode);
     }
 }

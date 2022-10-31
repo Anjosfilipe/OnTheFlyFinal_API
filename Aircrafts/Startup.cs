@@ -39,6 +39,9 @@ namespace Aircrafts
             services.AddSingleton<IDataBaseSettings>(sp => sp.GetRequiredService<IOptions<DataBaseSettings>>().Value);
             services.AddSingleton<AircraftServices>();
             services.AddSingleton<AircraftGarbageServices>();
+            services.Configure<CompanyServicesSettings>(Configuration.GetSection(nameof(CompanyServicesSettings)));
+            services.AddSingleton<ICompanyServicesSettings>(sp => sp.GetRequiredService<IOptions<CompanyServicesSettings>>().Value);
+            services.AddSingleton<CompanyServices>();
 
         }
 

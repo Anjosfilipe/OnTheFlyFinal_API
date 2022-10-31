@@ -47,6 +47,9 @@ namespace Flights
             services.Configure<AircraftServicesSettings>(Configuration.GetSection(nameof(AircraftServicesSettings)));
             services.AddSingleton<IAircraftServicesSettings>(sp => sp.GetRequiredService<IOptions<AircraftServicesSettings>>().Value);
             services.AddSingleton<AircraftServices>();
+            services.Configure<CompanyServicesSettings>(Configuration.GetSection(nameof(CompanyServicesSettings)));
+            services.AddSingleton<ICompanyServicesSettings>(sp => sp.GetRequiredService<IOptions<CompanyServicesSettings>>().Value);
+            services.AddSingleton<CompanyServices>();
 
         }
 

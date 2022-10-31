@@ -2,7 +2,6 @@
 using ClassLibrary;
 using MongoDB.Driver;
 using System.Collections.Generic;
-
 namespace Aircrafts.Services
 {
     public class AircraftGarbageServices
@@ -22,4 +21,4 @@ namespace Aircrafts.Services
         public List<AircraftGarbage> GetAllAircraftGarbage() => _aircraftGarbage.Find<AircraftGarbage>(aircraftGarbage => true).ToList();
         public AircraftGarbage GetAircraftGarbage(string rab) => _aircraftGarbage.Find<AircraftGarbage>(aircraftGarbage => aircraftGarbage.RAB == rab).FirstOrDefault();
     }
-}
+}  

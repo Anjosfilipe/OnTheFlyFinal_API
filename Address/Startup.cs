@@ -35,9 +35,13 @@ namespace Addresses
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Address", Version = "v1" });
             });
-            services.Configure<DataBaseSettings>(Configuration.GetSection(nameof(DataBaseSettings))); 
-            IServiceCollection serviceCollection = services.AddSingleton<IDataBaseSettings>(sp => sp.GetRequiredService<IOptions<DataBaseSettings>>().Value);
+            //services.Configure<DataBaseSettings>(Configuration.GetSection(nameof(DataBaseSettings))); 
+            //IServiceCollection serviceCollection = services.AddSingleton<IDataBaseSettings>(sp => sp.GetRequiredService<IOptions<DataBaseSettings>>().Value);
+            //services.AddSingleton<AddressServices>();services.Configure<AddressServicesSettings>(Configuration.GetSection(nameof(AddressServicesSettings)));
+            services.Configure<AddressServicesSettings>(Configuration.GetSection(nameof(AddressServicesSettings)));
+            services.AddSingleton<IAddressServicesSettings>(sp => sp.GetRequiredService<IOptions<AddressServicesSettings>>().Value);
             services.AddSingleton<AddressServices>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
