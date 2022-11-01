@@ -34,7 +34,7 @@ namespace Passangers.Controllers
         [HttpGet]
         public ActionResult<List<PassengerRestricted>> GetAllPassengersRestricteds() => _passengerRestrictedServices.GetAllPassengersRestricteds();
         [HttpPost]
-        public ActionResult<PassengerRestricted> PostPassengerRestricted([FromQuery] string cpf) //REVER ESTE METODO
+        public ActionResult<PassengerRestricted> PostPassengerRestricted([FromQuery] string cpf) 
         {
             cpf = cpf.Trim();
             cpf = cpf.Replace(".", "").Replace("-", "");

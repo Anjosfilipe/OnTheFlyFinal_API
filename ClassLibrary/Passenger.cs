@@ -11,7 +11,7 @@ namespace ClassLibrary
         [StringLength(14, MinimumLength = 11, ErrorMessage = "CPF inválido!")]
         public String CPF { get; set; }
         [Required(ErrorMessage = "O campo Nome é obrigatório!")]
-        [StringLength(30, MinimumLength = 5, ErrorMessage = "Número de caracteres excede o limite!!")]
+        [StringLength(30, ErrorMessage = "Número de caracteres excede o limite!!")]
         public String Name { get; set; }
         [Required(ErrorMessage = "O campo Gênero é obrigatório!")]
         [StringLength(1, ErrorMessage = "Gênero inválido! Digite M para Masculino ou F para Feminino")]

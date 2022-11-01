@@ -14,7 +14,7 @@ namespace Flights.Services
         }
         public Airport GetAirport(string iata)
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(_settings.Address + "api/Airport/" + iata); //url
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(_settings.Address + "Airport/" + iata); //url
             request.AllowAutoRedirect = false;
             HttpWebResponse verificaServidor = (HttpWebResponse)request.GetResponse();
             Stream stream = verificaServidor.GetResponseStream();

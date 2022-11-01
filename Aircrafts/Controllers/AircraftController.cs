@@ -45,7 +45,6 @@ namespace Aircrafts.Controllers
                     return BadRequest("Data de último voo é um valor no passado");
                 if (dtLastFlight.CompareTo(dtRegistry) > 0)//data é posterior a data atual
                     return BadRequest("Data de último voo é um valor futuro");
-                //como verificar se dtLastFlight é null
             }
             Aircraft aircraft = new Aircraft() { Capacity = capacity, RAB = rab, DtLastFlight = dtLastFlight, DtRegistry = dtRegistry };
             if (cnpj.Length == 14 || cnpj.Length == 18)
@@ -108,7 +107,6 @@ namespace Aircrafts.Controllers
                 DtLastFlight = dtLastFlight,
                 Capacity = capacity
             };
-            //no entanto, pode ser um valor igual ou posterior a data de registro
             if (cnpj.Length == 14 || cnpj.Length == 18)
             {
                 cnpj = cnpj.Trim();

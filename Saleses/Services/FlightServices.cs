@@ -29,7 +29,7 @@ namespace Saleses.Services
             string dateDay = datein.Substring(0, 2);
 
             string dateFinal = dateYear + "-" + dateMounth + "-" + dateDay;
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(_settings.Address+$"api/Flight/{dateFinal}?iata={iata}&hours={hours}&minutes={minutes}"); //url
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(_settings.Address + $"api/Flight/{dateFinal}?iata={iata}&hours={hours}&minutes={minutes}");//https://localhost:44353/api/Flight/2023-02-02?iata=jtn&hours=15&minutes=30
             request.AllowAutoRedirect = false;
             HttpWebResponse verificaServidor = (HttpWebResponse)request.GetResponse();
             Stream stream = verificaServidor.GetResponseStream();

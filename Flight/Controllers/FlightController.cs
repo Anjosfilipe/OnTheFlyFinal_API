@@ -36,15 +36,14 @@ namespace Flights.Controllers
             iata = iata.ToUpper();
             if (date < DateTime.Now)
             {
-                return NotFound("Impossivel criar voo com data retroativa!");
+                return BadRequest("Impossivel criar voo com data retroativa!");
             }
             else
             {
-
                 var destiny = _airportServices.GetAirport(iata);
                 if (destiny == null)
                 {
-                    return NotFound("Destino nao encontrado!");
+                    return BadRequest("Destino nao encontrado!");
                 }
                 else
                 {
@@ -57,10 +56,10 @@ namespace Flights.Controllers
                     else { return BadRequest("RAB não está de acordo com o tamanho pré estabelecido"); }
                     rab = rab.Substring(0, 2) + "-" + rab.Substring(2, 3);
                     var plane = _aircraftServices.GetAircraft(rab);
-                    if(plane.Company.Status == false) { return NotFound("Compania Bloqueada!"); }
+                    if(plane.Company.Status == false) { return BadRequest("Companhia Bloqueada!"); }
                     if (plane == null)
                     {
-                        return NotFound("Impossivel encontar Aeronave!");
+                        return BadRequest("Impossivel encontar Aeronave!");
                     }
                     else
                     {
@@ -75,18 +74,15 @@ namespace Flights.Controllers
                         cnpj = cnpj.Replace("{", "").Replace("}", "").Replace(":", "").Replace(";", "");
                         cnpj = cnpj.Replace("<", "").Replace(">", "").Replace("ç", "").Replace("Ç", "");
                         cnpj = cnpj[..2].ToString() + "." + cnpj.Substring(2, 3).ToString() + "." + cnpj.Substring(5, 3).ToString() + '/' + cnpj.Substring(8, 4).ToString() + "-" + cnpj.Substring(12, 2).ToString();
-                        var restited = _companyServices.GetCompany(cnpj);
-                        if (restited.Status == false)
+                        var company = _companyServices.GetCompany(cnpj);
+                        if (company.Status == false)
                         {
-                            return NotFound("Infelizmente essa Compania não pode cadastrar voos");
+                            return BadRequest("Infelizmente essa Companhia não pode cadastrar voos");
                         }
                         else
                         {
                             plane.DtLastFlight = date;
                             Flight flight = new Flight() { Status = true, Plane = plane, Destiny = destiny, Departure = date };
-
-
-
                             _flightServices.CreateFlights(flight);
                             _=_aircraftServices.PutAircraftFlight(flight);
                             return Ok(flight);
@@ -106,14 +102,12 @@ namespace Flights.Controllers
             var destiny = _airportServices.GetAirport(iata);
             if (destiny == null)
             {
-                return NotFound();
+                return NotFound("Aeroporto não encontrado!");
             }
-
-            var flight = _flightServices.GetFlights(destiny.Iata, date);
-
+            var flight = _flightServices.GetFlights(destiny.iata, date);
             if (flight == null)
             {
-                return NotFound();
+                return NotFound("Voo não encontrado!");
             }
             return Ok(flight);
 
@@ -127,24 +121,17 @@ namespace Flights.Controllers
             var destiny = _airportServices.GetAirport(iata);
             if (destiny == null)
             {
-                return NotFound();
+                return NotFound("Aeroporto não encontrado!");
             }
-            var flight = _flightServices.GetFlights(destiny.Iata, date);
+            var flight = _flightServices.GetFlights(destiny.iata, date);
             if (flight == null)
             {
-                return NotFound();
+                return NotFound("Voo não encontrado!");
             }
             flight.Status = status;
             flight.Sales = sales;
             _flightServices.UpdateFlights(flight);
-            return flight;
-        }
-
-        [HttpPut("flight", Name = "Internal")]
-        public ActionResult<Flight> UpdateFlight(Flight flight)
-        {
-            _flightServices.UpdateFlights(flight);
-            return Ok();
+            return Ok(flight);
         }
     }
 }

@@ -68,9 +68,9 @@ namespace Companys.Controllers
             {
                 return BadRequest($"A companhia tem {result.Days / 30} meses, o tempo é insufiente para finalizar o cadastro!");
             }
-            if (company.Address.ZipCode.Length > 9) return BadRequest("Quantidade de caracteres máximos excedidos");
-            if (company.Address.Complement.Length > 10) return BadRequest("Quantidade de caracteres máximos excedidos");
             company.Address = _addressServices.GetAddress(cep);
+            if (company.Address.ZipCode.Length > 9) return BadRequest("Quantidade de caracteres máximos excedidos");
+            //if (company.Address.Complement.Length > 10) return BadRequest("Quantidade de caracteres máximos excedidos");
             if (company.Address == null) return NotFound("Endereço não encontrado!");
             else
             {
@@ -129,9 +129,9 @@ namespace Companys.Controllers
                 if (companyIn.NameOpt.Length > 30) return BadRequest("Quantidade de caracteres máximos foi atingida!");
                 var company = _companyServices.GetCompany(cnpj);
                 if (company == null) return NotFound("Algo deu errado na requisição, companhia não encontrada!");
-                if (company.Address.ZipCode.Length > 9) return BadRequest("Quantidade de caracteres máximos excedidos");
-                if (company.Address.Complement.Length > 10) return BadRequest("Quantidade de caracteres máximos excedidos");
                 var address = _addressServices.GetAddress(cep);
+                if (company.Address.ZipCode.Length > 9) return BadRequest("Quantidade de caracteres máximos excedidos");
+                //if (company.Address.Complement.Length > 10) return BadRequest("Quantidade de caracteres máximos excedidos");
                 if (address == null) return NotFound("Endereço não encontrado!");
                 else
                 {

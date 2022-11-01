@@ -60,9 +60,9 @@ namespace Saleses.Controllers
                 string cpfperson = listcpf[i];
                 cpfperson = cpfperson.Substring(0, 3) + "." + cpfperson.Substring(3, 3) + "." + cpfperson.Substring(6, 3) + "-" + cpfperson.Substring(9, 2);
                 var passenger = _passengerServices.GetPassenger(cpfperson);
-                if (passenger == null)
+                if (passenger == null || passenger.Status == false)
                 {
-                    return BadRequest($"Não encotramos esse Cpf{listcpf[i]} em nossos Cadastros de Passageiro!");
+                    return BadRequest($"Não podemos realizar a venda para este Cpf {listcpf[i]} !");
                 }
                 int age = DateTime.Now.Year - passenger.DtBirth.Year;
                 if (i == 0 && age < 18)
@@ -74,7 +74,7 @@ namespace Saleses.Controllers
                 
             }
            
-            iata = iata.ToUpper();
+            iata = iata.ToLower();
             var flight = _flightServices.GetFlight(iata, dateflight, hours, minutes);
             if (flight == null)
             {
