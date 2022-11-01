@@ -29,7 +29,7 @@ namespace Saleses.Services
             string dateDay = datein.Substring(0, 2);
 
             string dateFinal = dateYear + "-" + dateMounth + "-" + dateDay;
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(_settings.Address + $"api/Flight/{dateFinal}?iata={iata}&hours={hours}&minutes={minutes}");//https://localhost:44353/api/Flight/2023-02-02?iata=jtn&hours=15&minutes=30
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create($"https://localhost:44353/api/Flight/{dateFinal}?iata={iata}&hours={hours}&minutes={minutes}");//
             request.AllowAutoRedirect = false;
             HttpWebResponse verificaServidor = (HttpWebResponse)request.GetResponse();
             Stream stream = verificaServidor.GetResponseStream();
@@ -56,7 +56,7 @@ namespace Saleses.Services
 
                 string jsonString = new JavaScriptSerializer().Serialize(flight);
                 HttpContent http = new StringContent(jsonString, Encoding.UTF8, "application/json");
-                HttpResponseMessage response = await _airCraftClient.PutAsync(_settings.Address+$"api/Flight?iata=glu&date={dateFinal}&hours={hours}&minutes={minutes}&status={flight.Status}&sales={flight.Sales}", null);
+                HttpResponseMessage response = await _airCraftClient.PutAsync($"https://localhost:44353/api/Flight?iata={flight.Destiny.iata}&date={dateFinal}&hours={hours}&minutes={minutes}&status={flight.Status}&sales={flight.Sales}", null);
 
                 if (response.IsSuccessStatusCode) return true;
                 return false;
