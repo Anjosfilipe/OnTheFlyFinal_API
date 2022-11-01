@@ -26,7 +26,6 @@ namespace ClassLibrary
         public bool? Status { get; set; }
         [Required(ErrorMessage = "Este campo é obrigatório!")]
         public Address Address { get; set; }
-        //[Required(ErrorMessage = "Este campo é obrigatório!")]
-        //public List<Airplane> Airplanes { get; set; }
+       
     }
 }

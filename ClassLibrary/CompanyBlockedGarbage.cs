@@ -22,6 +22,7 @@ namespace ClassLibrary
         public string NameOpt { get; set; }
         [Required(ErrorMessage = "Este campo é obrigatório!")]
         [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "dd/MM/yyyy")]
         public DateTime DtOpen { get; set; }
         public bool? Status { get; set; }
         public Address Address { get; set; }

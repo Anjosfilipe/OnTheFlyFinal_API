@@ -22,15 +22,22 @@ namespace Companys.Controllers
         [HttpPost]
         public ActionResult<CompanyGarbage> PostCompanyGarbage(string cnpj)
         {
+            if (cnpj == null) return BadRequest("Campo CNPJ obrigatório!");
             cnpj = cnpj.Trim();
             cnpj = cnpj.Replace("%2F", "/");
+            cnpj = cnpj.Replace("/", "").Replace(".", "");
+            cnpj = cnpj.Replace(".", "").Replace("-", "").Replace("/", "").Replace(" ", "");
+            cnpj = cnpj.Replace("+", "").Replace("*", "").Replace(",", "").Replace("?", "");
+            cnpj = cnpj.Replace("!", "").Replace("@", "").Replace("#", "").Replace("$", "");
+            cnpj = cnpj.Replace("%", "").Replace("¨", "").Replace("&", "").Replace("(", "");
+            cnpj = cnpj.Replace("=", "").Replace("[", "").Replace("]", "").Replace(")", "");
+            cnpj = cnpj.Replace("{", "").Replace("}", "").Replace(":", "").Replace(";", "");
+            cnpj = cnpj.Replace("<", "").Replace(">", "").Replace("ç", "").Replace("Ç", "");
+            cnpj = cnpj[..2].ToString() + "." + cnpj.Substring(2, 3).ToString() + "." + cnpj.Substring(5, 3).ToString() + '/' + cnpj.Substring(8, 4).ToString() + "-" + cnpj.Substring(12, 2).ToString();
             if (companyUtils.IsCnpjValid(cnpj) == false)
             {
                 return BadRequest("CNPJ inválido!");
             }
-            //CompanyGarbage compGarbage = new CompanyGarbage();
-            //var comp = _companyBlockedGarbageServices.GetCompanyBlockedGarbage(cnpj);
-            //if (comp != null) return BadRequest("Companhia já cadastrada com esse CNPJ!");
             Company companyIn = _companyServices.GetCompany(cnpj);
             if (companyIn == null)
                 return NotFound("Algo deu errado na requisição, companhia não encontrada!");
@@ -52,8 +59,22 @@ namespace Companys.Controllers
         [HttpGet("{cnpj}", Name = "GetCompanyGarbage")]
         public ActionResult<Company> GetCompanyGarbage(string cnpj)
         {
+            if (cnpj == null) return BadRequest("Campo CNPJ obrigatório!");
             cnpj = cnpj.Trim();
             cnpj = cnpj.Replace("%2F", "/");
+            cnpj = cnpj.Replace("/", "").Replace(".", "");
+            cnpj = cnpj.Replace(".", "").Replace("-", "").Replace("/", "").Replace(" ", "");
+            cnpj = cnpj.Replace("+", "").Replace("*", "").Replace(",", "").Replace("?", "");
+            cnpj = cnpj.Replace("!", "").Replace("@", "").Replace("#", "").Replace("$", "");
+            cnpj = cnpj.Replace("%", "").Replace("¨", "").Replace("&", "").Replace("(", "");
+            cnpj = cnpj.Replace("=", "").Replace("[", "").Replace("]", "").Replace(")", "");
+            cnpj = cnpj.Replace("{", "").Replace("}", "").Replace(":", "").Replace(";", "");
+            cnpj = cnpj.Replace("<", "").Replace(">", "").Replace("ç", "").Replace("Ç", "");
+            cnpj = cnpj[..2].ToString() + "." + cnpj.Substring(2, 3).ToString() + "." + cnpj.Substring(5, 3).ToString() + '/' + cnpj.Substring(8, 4).ToString() + "-" + cnpj.Substring(12, 2).ToString();
+            if (companyUtils.IsCnpjValid(cnpj) == false)
+            {
+                return BadRequest("CNPJ inválido!");
+            }
             var company = _companyGarbageServices.GetCompanyGarbage(cnpj);
             if (company == null)
                 return NotFound("Algo deu errado na requisição, companhia não encontrada!");
