@@ -1,15 +1,41 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using Newtonsoft.Json;
 
 namespace ClassLibrary
-{ 
+{
 
-    [BsonIgnoreExtraElements]
+    [JsonObject(MemberSerialization.OptIn)]
     public class Airport
     {
-        [Required]
-        public string Iata { get; set; }
-        public string State { get; set; }
-        public string Coutry { get; set; }
+        //[BsonId]
+        [JsonPropertyName("_id")]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string id { get; set; }
+        [JsonPropertyName("iata")]
+        [BsonRepresentation(BsonType.String)]
+        public string iata { get; set; }
+        [JsonPropertyName("time_zone_id")]
+        public string time_zone_id { get; set; }
+        [JsonPropertyName("name")]
+        public string name { get; set; }
+        [JsonPropertyName("city_code")]
+        public string city_code { get; set; }
+        [JsonPropertyName("country_ìd")]
+        public string country_id { get; set; }
+        [JsonPropertyName("location")]
+        public string location { get; set; }
+        [JsonPropertyName("elevation")]
+        public string elevation { get; set; }
+        [JsonPropertyName("icao")]
+        public string icao { get; set; }
+
+        [JsonPropertyName("city")]
+        public string city { get; set; }
+
+        [JsonPropertyName("state")]
+        public string state { get; set; }
     }
 }
