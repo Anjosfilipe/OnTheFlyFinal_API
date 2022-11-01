@@ -145,12 +145,12 @@ namespace Companys.Controllers
                     {
                         CompanyBlocked companyBlocked = new()
                         {
-                            CNPJ = companyIn.CNPJ,
-                            Name = companyIn.Name,
-                            NameOpt = companyIn.NameOpt,
-                            DtOpen = companyIn.DtOpen,
-                            Status = companyIn.Status,
-                            Address = companyIn.Address
+                            CNPJ = company.CNPJ,
+                            Name = company.Name,
+                            NameOpt = company.NameOpt,
+                            DtOpen = company.DtOpen,
+                            Status = company.Status,
+                            Address = company.Address
                         };
                         _companyBlockedServices.CreateCompanyBlocked(companyBlocked);
                     }
